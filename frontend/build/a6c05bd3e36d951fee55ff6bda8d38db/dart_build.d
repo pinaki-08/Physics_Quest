@@ -1,0 +1,1 @@
+ /Users/vipulsingh/Desktop/Physics_Ouest/frontend/build/a6c05bd3e36d951fee55ff6bda8d38db/dart_build_result.json:  /Users/vipulsingh/Desktop/Physics_Ouest/frontend/.dart_tool/package_config.json /Users/vipulsingh/Desktop/Physics_Ouest/frontend/pubspec.yaml /Users/vipulsingh/development/flutter/bin/cache/dart-sdk/version

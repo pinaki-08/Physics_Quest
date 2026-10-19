@@ -1,0 +1,208 @@
+import '../models/lesson.dart';
+
+/// The Gravity and Weight lesson. Mirrors backend/seed/lessons/gravity.json.
+const gravityLesson = Lesson(
+  id: 'gravity',
+  title: 'Gravity & Weight',
+  subtitle: 'The pull that never lets go.',
+  grade: 6,
+  estimatedMinutes: 8,
+  sections: [
+    LessonSection(
+      index: 1,
+      title: 'What is gravity?',
+      titleEs: '¿Qué es la gravedad?',
+      art: 'earthPull',
+      demo: 'none',
+      body:
+          'Gravity is a force that pulls every object towards every '
+          'other object.\n\n'
+          'You only notice it near something huge. The Earth is huge, '
+          'so it pulls you, your bag and a falling apple straight down '
+          'towards its centre. Gravity never switches off and never '
+          'needs to touch you to work.',
+      bodyEs:
+          'La gravedad es una fuerza que atrae cada objeto hacia '
+          'todos los demás objetos. Solo la notas cerca de algo enorme. '
+          'La Tierra es enorme, así que te atrae a ti, a tu mochila y a '
+          'una manzana que cae, directamente hacia su centro. La '
+          'gravedad nunca se apaga y no necesita tocarte para actuar.',
+    ),
+    LessonSection(
+      index: 2,
+      title: 'Mass is not weight',
+      titleEs: 'La masa no es el peso',
+      art: 'massVsWeight',
+      demo: 'massWeight',
+      body:
+          'Mass is how much stuff an object is made of. It is '
+          'measured in kilograms and it never changes.\n\n'
+          'Weight is the pull of gravity on that mass. It is a force, '
+          'so it is measured in newtons. Change the gravity and the '
+          'weight changes, even though the mass has not.',
+      bodyEs:
+          'La masa es la cantidad de materia de la que está hecho '
+          'un objeto. Se mide en kilogramos y nunca cambia. El peso es '
+          'el tirón de la gravedad sobre esa masa. Es una fuerza, así '
+          'que se mide en newtons. Si cambia la gravedad, cambia el '
+          'peso, aunque la masa siga siendo la misma.',
+    ),
+    LessonSection(
+      index: 3,
+      title: 'Weight changes with the planet',
+      titleEs: 'El peso cambia según el planeta',
+      art: 'planetRow',
+      demo: 'planetWeight',
+      body:
+          'Every world pulls with its own strength. On Earth gravity '
+          'pulls with about 10 newtons for every kilogram.\n\n'
+          'The Moon is much smaller, so it pulls about six times more '
+          'weakly. Jupiter is enormous and pulls far harder. Same '
+          'astronaut, same mass, very different weight.',
+      bodyEs:
+          'Cada mundo tira con su propia fuerza. En la Tierra la '
+          'gravedad tira con unos diez newtons por cada kilogramo. La '
+          'Luna es mucho más pequeña, así que tira unas seis veces más '
+          'débil. Júpiter es enorme y tira mucho más fuerte. El mismo '
+          'astronauta, la misma masa, un peso muy distinto.',
+    ),
+    LessonSection(
+      index: 4,
+      title: 'Everything falls together',
+      titleEs: 'Todo cae al mismo tiempo',
+      art: 'dropTest',
+      demo: 'dropRace',
+      body:
+          'Drop a hammer and a feather and the hammer wins — but not '
+          'because it is heavier.\n\n'
+          'The feather loses because air pushes back on it. Take the '
+          'air away and both hit the ground at exactly the same '
+          'moment. Astronauts have actually tried this on the Moon.',
+      bodyEs:
+          'Si sueltas un martillo y una pluma, gana el martillo, '
+          'pero no porque pese más. La pluma pierde porque el aire la '
+          'empuja hacia atrás. Si quitas el aire, los dos llegan al '
+          'suelo exactamente al mismo tiempo. Los astronautas lo han '
+          'probado de verdad en la Luna.',
+    ),
+  ],
+  keyPoints: [
+    'Gravity pulls everything towards the centre of the Earth.',
+    'Mass is measured in kilograms and never changes.',
+    'Weight is a force, measured in newtons.',
+    'Weight = mass multiplied by the strength of gravity.',
+    'Without air, heavy and light objects fall together.',
+  ],
+  keyPointsEs: [
+    'La gravedad atrae todo hacia el centro de la Tierra.',
+    'La masa se mide en kilogramos y nunca cambia.',
+    'El peso es una fuerza que se mide en newtons.',
+    'Peso = masa multiplicada por la intensidad de la gravedad.',
+    'Sin aire, los objetos pesados y ligeros caen al mismo tiempo.',
+  ],
+  glossary: [
+    GlossaryTerm(
+      en: 'Gravity',
+      es: 'Gravedad',
+      definitionEn: 'The force pulling objects towards each other.',
+      definitionEs: 'La fuerza que atrae los objetos unos hacia otros.',
+      audioEn: 'audio/en/gravity.mp3',
+      audioEs: 'audio/es/gravedad.mp3',
+    ),
+    GlossaryTerm(
+      en: 'Mass',
+      es: 'Masa',
+      definitionEn: 'How much matter an object contains, in kilograms.',
+      definitionEs:
+          'La cantidad de materia que contiene un objeto, en kilogramos.',
+      audioEn: 'audio/en/mass.mp3',
+      audioEs: 'audio/es/masa.mp3',
+    ),
+    GlossaryTerm(
+      en: 'Weight',
+      es: 'Peso',
+      definitionEn: 'The force of gravity on a mass, in newtons.',
+      definitionEs: 'La fuerza de la gravedad sobre una masa, en newtons.',
+      audioEn: 'audio/en/weight.mp3',
+      audioEs: 'audio/es/peso.mp3',
+    ),
+    GlossaryTerm(
+      en: 'Free fall',
+      es: 'Caída libre',
+      definitionEn: 'Falling with gravity as the only force acting.',
+      definitionEs: 'Caer cuando la gravedad es la única fuerza que actúa.',
+      audioEn: 'audio/en/free_fall.mp3',
+      audioEs: 'audio/es/caida_libre.mp3',
+    ),
+  ],
+  questions: [
+    Question(
+      id: 'q1',
+      explanation:
+          'Mass is the amount of matter in you and it never changes. Weight is the pull of gravity, so it drops on the Moon.',
+      prompt: 'Which of these never changes when you travel to the Moon?',
+      options: [
+        'Your mass',
+        'Your weight',
+        'The gravity',
+        'Your size in newtons',
+      ],
+      answer: 0,
+    ),
+    Question(
+      id: 'q2',
+      explanation:
+          'Weight is a force, and forces are measured in newtons. Kilograms measure mass instead.',
+      prompt: 'Weight is measured in...',
+      options: ['Newtons', 'Kilograms', 'Metres', 'Seconds'],
+      answer: 0,
+    ),
+    Question(
+      id: 'q3',
+      explanation:
+          'The Moon has no air, so nothing slows the feather down. With only gravity acting, everything falls together.',
+      prompt:
+          'On the Moon a hammer and a feather are dropped together. They...',
+      options: [
+        'Land at the same time',
+        'The hammer lands first',
+        'The feather lands first',
+        'Neither one falls',
+      ],
+      answer: 0,
+    ),
+    Question(
+      id: 'q4',
+      explanation:
+          'Your mass is the same everywhere, but weight depends on the strength of gravity where you are standing.',
+      kind: QuestionKind.blank,
+      prompt:
+          'Your mass stays the same, but your ___ changes on another planet.',
+      options: ['weight', 'height', 'age', 'volume'],
+      answer: 0,
+    ),
+    Question(
+      id: 'q5',
+      explanation:
+          'Weight, air resistance and friction are all forces, so all are measured in newtons. Mass is measured in kilograms.',
+      kind: QuestionKind.oddOneOut,
+      prompt: 'Three of these are measured in newtons. Which one is not?',
+      options: ['Mass', 'Weight', 'Air resistance', 'Friction'],
+      answer: 0,
+    ),
+    Question(
+      id: 'q6',
+      explanation:
+          'Mass and weight sound alike but use different units, and free fall means gravity is the only force acting.',
+      kind: QuestionKind.match,
+      prompt: 'Match each quantity to its unit or meaning.',
+      points: 20,
+      pairs: [
+        MatchPair(left: 'Mass', right: 'Kilograms'),
+        MatchPair(left: 'Weight', right: 'Newtons'),
+        MatchPair(left: 'Gravity on Earth', right: 'About 10 N per kg'),
+        MatchPair(left: 'Free fall', right: 'Only gravity acting'),
+      ],
+    ),
+  ],
+);

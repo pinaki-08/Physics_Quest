@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Lesson content is shared reference material: anyone signed in may read it,
+    // but it is only ever written from the seed script or the Firebase console.
+    match /lessons/{lessonId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+
+      match /questions/{questionId} {
+        allow read: if request.auth != null;
+        allow write: if false;
+      }
+    }
+
+    // A student may only ever touch their own progress document.
+    match /progress/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /attempts/{attemptId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

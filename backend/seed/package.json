@@ -1,0 +1,11 @@
+{
+  "name": "physics-quest-seed",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "node seed.mjs"
+  },
+  "dependencies": {
+    "firebase": "^11.0.0"
+  }
+}

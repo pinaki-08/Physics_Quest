@@ -1,0 +1,215 @@
+import '../models/lesson.dart';
+
+/// The Motion and Speed lesson. Mirrors backend/seed/lessons/motion.json.
+const motionLesson = Lesson(
+  id: 'motion',
+  title: 'Motion & Speed',
+  subtitle: 'How we describe things that move.',
+  grade: 6,
+  estimatedMinutes: 7,
+  sections: [
+    LessonSection(
+      index: 1,
+      title: 'What is motion?',
+      titleEs: '¿Qué es el movimiento?',
+      art: 'reference',
+      demo: 'none',
+      body:
+          'Something is in motion when its position changes '
+          'compared to something else.\n\n'
+          'That "something else" is called a reference point. Sitting '
+          'on a moving bus you are still compared to your seat, but '
+          'moving fast compared to a tree outside. Both answers are '
+          'correct — they just use different reference points.',
+      bodyEs:
+          'Algo está en movimiento cuando su posición cambia en '
+          'comparación con otra cosa. Esa otra cosa se llama punto de '
+          'referencia. Sentado en un autobús en marcha, estás quieto '
+          'respecto a tu asiento, pero te mueves rápido respecto a un '
+          'árbol de afuera. Las dos respuestas son correctas: solo usan '
+          'puntos de referencia distintos.',
+    ),
+    LessonSection(
+      index: 2,
+      title: 'Speed = distance ÷ time',
+      titleEs: 'Velocidad = distancia ÷ tiempo',
+      art: 'speedometer',
+      demo: 'speedFormula',
+      body:
+          'Speed tells you how much distance is covered in each '
+          'unit of time.\n\n'
+          'Divide the distance travelled by the time it took. Go 100 '
+          'metres in 20 seconds and your speed is 5 metres per second. '
+          'Cover more ground in the same time, or the same ground in '
+          'less time, and the speed goes up.',
+      bodyEs:
+          'La velocidad te dice cuánta distancia se recorre en cada '
+          'unidad de tiempo. Divide la distancia recorrida entre el '
+          'tiempo que tardó. Si recorres cien metros en veinte segundos, '
+          'tu velocidad es de cinco metros por segundo. Si cubres más '
+          'distancia en el mismo tiempo, o la misma distancia en menos '
+          'tiempo, la velocidad aumenta.',
+    ),
+    LessonSection(
+      index: 3,
+      title: 'Who is faster?',
+      titleEs: '¿Quién es más rápido?',
+      art: 'raceTrack',
+      demo: 'raceTrack',
+      body:
+          'To compare two moving things fairly you have to compare '
+          'their speeds, not just the distance.\n\n'
+          'Finishing first only means you were faster if you both '
+          'started together and ran the same track. Otherwise, work '
+          'out each speed and compare those.',
+      bodyEs:
+          'Para comparar dos cosas en movimiento de forma justa hay '
+          'que comparar sus velocidades, no solo la distancia. Llegar '
+          'primero solo significa que fuiste más rápido si ambos '
+          'salieron juntos y recorrieron la misma pista. Si no, calcula '
+          'cada velocidad y compáralas.',
+    ),
+    LessonSection(
+      index: 4,
+      title: 'Speeding up and slowing down',
+      titleEs: 'Acelerar y reducir la velocidad',
+      art: 'acceleration',
+      demo: 'speedChange',
+      body:
+          'Speed does not have to stay the same. When it changes, we '
+          'say the object is accelerating.\n\n'
+          'Speeding up is acceleration. Slowing down is acceleration '
+          'too — just in the opposite direction. A steady speed means '
+          'no acceleration at all.',
+      bodyEs:
+          'La velocidad no tiene que quedarse igual. Cuando cambia, '
+          'decimos que el objeto acelera. Ir más rápido es aceleración. '
+          'Frenar también es aceleración, solo que en dirección '
+          'contraria. Una velocidad constante significa que no hay '
+          'aceleración.',
+    ),
+  ],
+  keyPoints: [
+    'Motion is a change of position.',
+    'Motion is always measured against a reference point.',
+    'Speed = distance divided by time.',
+    'Same distance in less time means more speed.',
+    'A change of speed is called acceleration.',
+  ],
+  keyPointsEs: [
+    'El movimiento es un cambio de posición.',
+    'El movimiento siempre se mide con respecto a un punto de referencia.',
+    'Velocidad = distancia dividida entre tiempo.',
+    'La misma distancia en menos tiempo significa mayor velocidad.',
+    'Un cambio de velocidad se llama aceleración.',
+  ],
+  glossary: [
+    GlossaryTerm(
+      en: 'Motion',
+      es: 'Movimiento',
+      definitionEn: 'A change of position compared to a reference point.',
+      definitionEs: 'Un cambio de posición respecto a un punto de referencia.',
+      audioEn: 'audio/en/motion.mp3',
+      audioEs: 'audio/es/movimiento.mp3',
+    ),
+    GlossaryTerm(
+      en: 'Reference point',
+      es: 'Punto de referencia',
+      definitionEn: 'The fixed thing you compare a position against.',
+      definitionEs: 'El objeto fijo con el que comparas una posición.',
+      audioEn: 'audio/en/reference_point.mp3',
+      audioEs: 'audio/es/punto_de_referencia.mp3',
+    ),
+    GlossaryTerm(
+      en: 'Speed',
+      es: 'Velocidad',
+      definitionEn: 'Distance travelled divided by the time taken.',
+      definitionEs: 'La distancia recorrida dividida entre el tiempo empleado.',
+      audioEn: 'audio/en/speed.mp3',
+      audioEs: 'audio/es/velocidad.mp3',
+    ),
+    GlossaryTerm(
+      en: 'Acceleration',
+      es: 'Aceleración',
+      definitionEn: 'Any change in speed, up or down.',
+      definitionEs:
+          'Cualquier cambio de velocidad, hacia arriba o hacia abajo.',
+      audioEn: 'audio/en/acceleration.mp3',
+      audioEs: 'audio/es/aceleracion.mp3',
+    ),
+  ],
+  questions: [
+    Question(
+      id: 'q1',
+      explanation:
+          'Speed is distance divided by time. 60 metres shared over 10 seconds is 6 metres in every second.',
+      prompt: 'You run 60 metres in 10 seconds. What is your speed?',
+      options: [
+        '6 metres per second',
+        '10 metres per second',
+        '600 metres per second',
+        '0.6 metres per second',
+      ],
+      answer: 0,
+    ),
+    Question(
+      id: 'q2',
+      explanation:
+          'Motion is always measured against a reference point. The seat and your bag travel with you, so you are still compared to them. The tree stays behind, so compared to it you are moving.',
+      prompt:
+          'Sitting still on a moving train, you are in motion compared to...',
+      options: ['A tree outside', 'Your seat', 'Your bag', 'The window'],
+      answer: 0,
+    ),
+    Question(
+      id: 'q3',
+      explanation:
+          'Acceleration means any change of speed, including slowing down. Braking changes the cyclist\'s speed, so it counts.',
+      prompt: 'A cyclist brakes at a corner. This is an example of...',
+      options: [
+        'Acceleration',
+        'Constant speed',
+        'No motion',
+        'A reference point',
+      ],
+      answer: 0,
+    ),
+    Question(
+      id: 'q4',
+      explanation:
+          'The formula is speed = distance divided by time. Force and mass belong to other formulas.',
+      kind: QuestionKind.blank,
+      prompt: 'Speed is the distance travelled divided by the ___ taken.',
+      options: ['time', 'force', 'mass', 'weight'],
+      answer: 0,
+    ),
+    Question(
+      id: 'q5',
+      explanation:
+          'Every unit of speed is a distance over a time, like metres per second. Kilograms measure mass, not speed.',
+      kind: QuestionKind.oddOneOut,
+      prompt: 'Three of these are units of speed. Which one is not?',
+      options: [
+        'kilograms',
+        'metres per second',
+        'kilometres per hour',
+        'miles per hour',
+      ],
+      answer: 0,
+    ),
+    Question(
+      id: 'q6',
+      explanation:
+          'Each term describes a different idea: what movement is, how fast it happens, and what you measure it against.',
+      kind: QuestionKind.match,
+      prompt: 'Match each word to what it means.',
+      points: 20,
+      pairs: [
+        MatchPair(left: 'Speed', right: 'Distance ÷ time'),
+        MatchPair(left: 'Motion', right: 'A change of position'),
+        MatchPair(left: 'Acceleration', right: 'A change of speed'),
+        MatchPair(left: 'Reference point', right: 'What you measure against'),
+      ],
+    ),
+  ],
+);

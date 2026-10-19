@@ -1,0 +1,19 @@
+// TEMPORARY: allows the seed script to write lesson documents.
+// Deploy firestore.rules immediately afterwards to lock writes back down.
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /lessons/{lessonId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /progress/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /attempts/{attemptId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
