@@ -6,11 +6,11 @@ import '../data/lesson_repository.dart';
 import '../models/lesson.dart';
 import '../services/lesson_narration.dart';
 import '../services/speech.dart';
-import '../services/vocabulary_matcher.dart';
 import '../theme.dart';
 import '../widgets/back_bar.dart';
 import '../widgets/bouncy.dart';
 import '../widgets/lesson_art.dart';
+import '../widgets/vocabulary_text.dart';
 
 class LessonScreen extends StatefulWidget {
   final String lessonId;
@@ -390,7 +390,7 @@ class _SectionState extends State<_Section> {
           if (spanish)
             Text(body, style: const TextStyle(fontSize: 14.5, height: 1.5))
           else
-            _VocabularyText(text: body, terms: widget.glossary),
+            VocabularyText(text: body, terms: widget.glossary),
           if (!spanish && widget.child != null) ...[
             const SizedBox(height: 18),
             widget.child!,
@@ -450,242 +450,6 @@ class _VocabularyHint extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VocabularyText extends StatelessWidget {
-  static const _bodyStyle = TextStyle(fontSize: 14.5, height: 1.5);
-
-  final String text;
-  final List<GlossaryTerm> terms;
-
-  const _VocabularyText({required this.text, required this.terms});
-
-  @override
-  Widget build(BuildContext context) {
-    final matches = findVocabularyMatches(text, terms);
-    if (matches.isEmpty) {
-      return Text(text, style: _bodyStyle);
-    }
-
-    final spans = <InlineSpan>[];
-    var cursor = 0;
-    for (final match in matches) {
-      if (match.start > cursor) {
-        spans.add(TextSpan(text: text.substring(cursor, match.start)));
-      }
-      spans.add(
-        WidgetSpan(
-          alignment: PlaceholderAlignment.baseline,
-          baseline: TextBaseline.alphabetic,
-          child: _HighlightedVocabulary(
-            label: text.substring(match.start, match.end),
-            term: match.term,
-            onTap: () => _showVocabularyCard(context, match.term),
-          ),
-        ),
-      );
-      cursor = match.end;
-    }
-    if (cursor < text.length) {
-      spans.add(TextSpan(text: text.substring(cursor)));
-    }
-
-    return Text.rich(TextSpan(style: _bodyStyle, children: spans));
-  }
-
-  Future<void> _showVocabularyCard(BuildContext context, GlossaryTerm term) {
-    return showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      useSafeArea: true,
-      constraints: const BoxConstraints(maxWidth: 560),
-      builder: (_) => _VocabularyCard(term: term),
-    );
-  }
-}
-
-class _HighlightedVocabulary extends StatelessWidget {
-  final String label;
-  final GlossaryTerm term;
-  final VoidCallback onTap;
-
-  const _HighlightedVocabulary({
-    required this.label,
-    required this.term,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final keyName = term.en.toLowerCase().replaceAll(' ', '-');
-    return Semantics(
-      button: true,
-      label:
-          '${term.en}. Spanish: ${term.es}. '
-          'Tap for meaning and pronunciation.',
-      child: ExcludeSemantics(
-        child: Material(
-          key: ValueKey('vocabulary-$keyName'),
-          color: AppColors.sunshine.withValues(alpha: 0.24),
-          borderRadius: BorderRadius.circular(6),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(6),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    label,
-                    style: _VocabularyText._bodyStyle.copyWith(
-                      color: AppColors.learnDeep,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                  const Icon(
-                    Icons.volume_up_rounded,
-                    size: 12,
-                    color: AppColors.learnDeep,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _VocabularyCard extends StatelessWidget {
-  final GlossaryTerm term;
-
-  const _VocabularyCard({required this.term});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 4, 24, 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.school_rounded,
-                size: 20,
-                color: AppColors.learn,
-              ),
-              const SizedBox(width: 8),
-              const Expanded(
-                child: Text(
-                  'Physics vocabulary · Vocabulario',
-                  style: TextStyle(
-                    color: AppColors.inkSoft,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              IconButton(
-                tooltip: 'Close',
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close_rounded),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            term.en,
-            style: const TextStyle(
-              color: AppColors.ink,
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          if (term.definitionEn.isNotEmpty) ...[
-            const SizedBox(height: 5),
-            Text(
-              term.definitionEn,
-              style: const TextStyle(
-                color: AppColors.inkSoft,
-                fontSize: 14,
-                height: 1.4,
-              ),
-            ),
-          ],
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Divider(height: 1),
-          ),
-          Row(
-            children: [
-              const Icon(
-                Icons.translate_rounded,
-                size: 19,
-                color: AppColors.practice,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                term.es,
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 23,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          if (term.definitionEs.isNotEmpty) ...[
-            const SizedBox(height: 5),
-            Text(
-              term.definitionEs,
-              style: const TextStyle(
-                color: AppColors.inkSoft,
-                fontSize: 14,
-                height: 1.4,
-              ),
-            ),
-          ],
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton.icon(
-                  key: const ValueKey('vocabulary-audio-en'),
-                  onPressed: () =>
-                      TermSpeaker.instance.speak(term.en, spanish: false),
-                  icon: const Icon(Icons.volume_up_rounded, size: 19),
-                  label: const Text('Hear EN'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.learn,
-                    padding: const EdgeInsets.symmetric(vertical: 13),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: FilledButton.icon(
-                  key: const ValueKey('vocabulary-audio-es'),
-                  onPressed: () =>
-                      TermSpeaker.instance.speak(term.es, spanish: true),
-                  icon: const Icon(Icons.volume_up_rounded, size: 19),
-                  label: const Text('Escuchar ES'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.practice,
-                    padding: const EdgeInsets.symmetric(vertical: 13),
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       ),

@@ -18,7 +18,7 @@ LessonRepository lessonRepository = const LocalLessonRepository();
 class LocalLessonRepository implements LessonRepository {
   const LocalLessonRepository();
 
-  static const _lessons = <String, Lesson>{
+  static final _lessons = <String, Lesson>{
     'motion': motionLesson,
     'forces': forcesLesson,
     'gravity': gravityLesson,

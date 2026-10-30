@@ -111,99 +111,1032 @@
     {
       "id": "q1",
       "prompt": "A force is best described as...",
+      "promptEs": "La mejor descripción de una fuerza es...",
       "options": [
         "A push or a pull",
         "A kind of energy",
         "A type of speed",
         "A tiny particle"
       ],
+      "optionsEs": [
+        "Un empujón o un tirón",
+        "Una forma de energía",
+        "Un tipo de velocidad",
+        "Una partícula diminuta"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "A force is simply a push or a pull. Energy and speed are different quantities, and a force is not a particle."
+      "explanation": "A force is simply a push or a pull. Energy and speed are different quantities, and a force is not a particle.",
+      "explanationEs": "Una fuerza es un empujón o un tirón. La energía y la velocidad son magnitudes distintas; una fuerza no es una partícula."
     },
     {
       "id": "q2",
-      "prompt": "Two teams each pull a rope with 50 N. What happens?",
+      "prompt": "A rope is at rest. Two teams pull it in opposite directions with 50 N each. What happens?",
+      "promptEs": "Una cuerda está en reposo. Dos equipos tiran de ella en sentidos opuestos con 50 N cada uno. ¿Qué ocurre?",
       "options": [
         "The rope stays still",
         "It moves left",
         "It moves right",
         "The rope snaps"
       ],
+      "optionsEs": [
+        "La cuerda permanece en reposo",
+        "Se mueve a la izquierda",
+        "Se mueve a la derecha",
+        "La cuerda se rompe"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Equal forces in opposite directions are balanced, so they cancel out and the motion does not change."
+      "explanation": "Equal forces in opposite directions are balanced, so they cancel out and the motion does not change.",
+      "explanationEs": "Las fuerzas iguales y opuestas están equilibradas. La fuerza neta es cero, así que no cambia el movimiento."
     },
     {
       "id": "q3",
       "prompt": "Which force slows a book sliding across a table?",
+      "promptEs": "¿Qué fuerza frena un libro que se desliza sobre una mesa?",
       "options": [
         "Friction",
         "Gravity",
         "Magnetism",
         "Air resistance"
       ],
+      "optionsEs": [
+        "Fricción",
+        "Gravedad",
+        "Magnetismo",
+        "Resistencia del aire"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Friction acts between two touching surfaces and opposes sliding. Air resistance matters far more at high speed."
+      "explanation": "Friction acts between two touching surfaces and opposes sliding. Air resistance matters far more at high speed.",
+      "explanationEs": "La fricción entre el libro y la mesa se opone al deslizamiento. La resistencia del aire suele ser más importante a velocidades altas."
     },
     {
       "id": "q4",
-      "kind": "blank",
       "prompt": "Forces are measured in ___.",
+      "promptEs": "Las fuerzas se miden en ___.",
       "options": [
         "newtons",
         "kilograms",
         "metres",
         "litres"
       ],
+      "optionsEs": [
+        "newtons",
+        "kilogramos",
+        "metros",
+        "litros"
+      ],
       "answer": 0,
       "points": 10,
-      "explanation": "Force is measured in newtons. Kilograms measure mass, which is a different quantity."
+      "kind": "blank",
+      "explanation": "Force is measured in newtons. Kilograms measure mass, which is a different quantity.",
+      "explanationEs": "La fuerza se mide en newtons; los kilogramos miden masa."
     },
     {
       "id": "q5",
-      "kind": "oddOneOut",
       "prompt": "Three of these are forces. Which one is not?",
+      "promptEs": "Tres de estas son fuerzas. ¿Cuál no lo es?",
       "options": [
         "Temperature",
         "Friction",
         "Gravity",
         "Air resistance"
       ],
+      "optionsEs": [
+        "Temperatura",
+        "Fricción",
+        "Gravedad",
+        "Resistencia del aire"
+      ],
       "answer": 0,
       "points": 10,
-      "explanation": "Temperature tells you how hot something is. It has no direction and cannot push or pull anything."
+      "kind": "oddOneOut",
+      "explanation": "Temperature tells you how hot something is. It has no direction and cannot push or pull anything.",
+      "explanationEs": "La temperatura describe qué tan caliente está algo. No es un empujón ni un tirón."
     },
     {
       "id": "q6",
-      "kind": "match",
       "prompt": "Match each force to what it does.",
-      "points": 20,
+      "promptEs": "Relaciona cada fuerza con lo que hace.",
       "options": [],
       "answer": 0,
+      "points": 20,
+      "kind": "match",
       "pairs": [
         {
           "left": "Gravity",
-          "right": "Pulls things downwards"
+          "right": "Pulls things downwards",
+          "leftEs": "Gravedad",
+          "rightEs": "Atrae los objetos hacia abajo"
         },
         {
           "left": "Friction",
-          "right": "Slows sliding surfaces"
+          "right": "Slows sliding surfaces",
+          "leftEs": "Fricción",
+          "rightEs": "Frena el deslizamiento entre superficies"
         },
         {
           "left": "Air resistance",
-          "right": "Pushes back on movers"
+          "right": "Pushes back on movers",
+          "leftEs": "Resistencia del aire",
+          "rightEs": "Se opone al movimiento a través del aire"
         },
         {
           "left": "Applied force",
-          "right": "The push you give"
+          "right": "The push you give",
+          "leftEs": "Fuerza aplicada",
+          "rightEs": "El empujón que aplicas"
         }
       ],
-      "explanation": "Each force acts in its own way: some pull down, some resist movement, and some come from you."
+      "explanation": "Each force acts in its own way: some pull down, some resist movement, and some come from you.",
+      "explanationEs": "Cada fuerza actúa de una manera: atraer, oponerse al deslizamiento, resistir el movimiento en el aire o aplicar un empujón."
+    },
+    {
+      "id": "q7",
+      "prompt": "A cart is pushed with 12 N to the right and 7 N to the left. What is the net horizontal force?",
+      "promptEs": "Sobre un carrito actúan 12 N hacia la derecha y 7 N hacia la izquierda. ¿Cuál es la fuerza neta horizontal?",
+      "options": [
+        "19 N to the right",
+        "5 N to the left",
+        "5 N to the right",
+        "0 N"
+      ],
+      "optionsEs": [
+        "19 N hacia la derecha",
+        "5 N hacia la izquierda",
+        "5 N hacia la derecha",
+        "0 N"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Opposite forces subtract: 12 minus 7 = 5 N. The net force points right because the rightward force is larger.",
+      "explanationEs": "Las fuerzas opuestas se restan: 12 menos 7 = 5 N. La fuerza neta apunta a la derecha porque esa fuerza es mayor."
+    },
+    {
+      "id": "q8",
+      "prompt": "A cart moves in a straight line at a steady speed. What happens if the net force on it remains zero?",
+      "promptEs": "Un carrito avanza en línea recta a velocidad constante. ¿Qué ocurre si la fuerza neta sobre él sigue siendo cero?",
+      "options": [
+        "It must stop immediately",
+        "It speeds up",
+        "It reverses direction",
+        "It keeps moving at the same speed and direction"
+      ],
+      "optionsEs": [
+        "Debe detenerse de inmediato",
+        "Aumenta su velocidad",
+        "Cambia al sentido contrario",
+        "Sigue moviéndose a la misma velocidad y en la misma dirección"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Zero net force means no change in motion. A cart that is already moving continues at the same speed in the same direction.",
+      "explanationEs": "Una fuerza neta igual a cero significa que el movimiento no cambia. Un carrito que ya se mueve continúa a la misma velocidad y en la misma dirección."
+    },
+    {
+      "id": "q9",
+      "prompt": "An empty cart and a loaded cart start at rest. The same net force acts on each for the same time. Which gains more speed?",
+      "promptEs": "Un carrito vacío y otro cargado parten del reposo. La misma fuerza neta actúa sobre ambos durante el mismo tiempo. ¿Cuál aumenta más su velocidad?",
+      "options": [
+        "The empty cart",
+        "The loaded cart",
+        "Both change speed by the same amount",
+        "Neither cart can change speed"
+      ],
+      "optionsEs": [
+        "El carrito vacío",
+        "El carrito cargado",
+        "Ambos cambian su velocidad en la misma medida",
+        "Ningún carrito puede cambiar de velocidad"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "For the same net force, the cart with less mass has greater acceleration. Over the same time, its speed changes more.",
+      "explanationEs": "Con la misma fuerza neta, el carrito de menor masa tiene mayor aceleración. Durante el mismo tiempo, su velocidad cambia más."
+    },
+    {
+      "id": "q10",
+      "prompt": "Which action is an example of an applied force?",
+      "promptEs": "¿Qué acción es un ejemplo de fuerza aplicada?",
+      "options": [
+        "Earth attracts a falling ball",
+        "A student pushes a chair",
+        "A magnet attracts a paper clip without touching it",
+        "The Moon attracts ocean water"
+      ],
+      "optionsEs": [
+        "La Tierra atrae una pelota que cae",
+        "Un estudiante empuja una silla",
+        "Un imán atrae un clip sin tocarlo",
+        "La Luna atrae el agua del océano"
+      ],
+      "answer": 1,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "An applied force is a direct push or pull by a person or another object. Pushing a chair is a contact interaction.",
+      "explanationEs": "Una fuerza aplicada es un empujón o un tirón directo de una persona u otro objeto. Empujar una silla es una interacción por contacto."
+    },
+    {
+      "id": "q11",
+      "prompt": "Why does an open parachute help a skydiver fall more slowly?",
+      "promptEs": "¿Por qué un paracaídas abierto ayuda a que una persona caiga más despacio?",
+      "options": [
+        "It removes gravity",
+        "It makes the skydiver lose mass",
+        "It increases air resistance",
+        "It stops air from touching the skydiver"
+      ],
+      "optionsEs": [
+        "Elimina la gravedad",
+        "Hace que la persona pierda masa",
+        "Aumenta la resistencia del aire",
+        "Impide que el aire toque a la persona"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "An open parachute presents a larger area to the air. This increases air resistance and reduces the eventual falling speed.",
+      "explanationEs": "Un paracaídas abierto presenta una superficie mayor al aire. Esto aumenta la resistencia del aire y reduce la velocidad final de caída."
+    },
+    {
+      "id": "q12",
+      "prompt": "A student pushes on a wall with 30 N. What force does the wall exert on the student?",
+      "promptEs": "Un estudiante empuja una pared con 30 N. ¿Qué fuerza ejerce la pared sobre el estudiante?",
+      "options": [
+        "30 N in the opposite direction",
+        "30 N in the same direction",
+        "No force",
+        "60 N in the opposite direction"
+      ],
+      "optionsEs": [
+        "30 N en sentido contrario",
+        "30 N en el mismo sentido",
+        "Ninguna fuerza",
+        "60 N en sentido contrario"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Interacting objects exert equal forces in opposite directions. These forces act on different objects: the wall and the student.",
+      "explanationEs": "Dos objetos que interactúan ejercen fuerzas iguales en sentidos opuestos. Estas fuerzas actúan sobre objetos distintos: la pared y el estudiante."
+    },
+    {
+      "id": "q13",
+      "prompt": "To test how push strength changes a cart's motion, what should students keep the same?",
+      "promptEs": "Para investigar cómo cambia el movimiento de un carrito al variar la intensidad del empujón, ¿qué deben mantener igual los estudiantes?",
+      "options": [
+        "The strength of the push",
+        "The final speed of the cart",
+        "The distance the cart travels",
+        "The cart, track surface, and push duration"
+      ],
+      "optionsEs": [
+        "La intensidad del empujón",
+        "La velocidad final del carrito",
+        "La distancia que recorre el carrito",
+        "El carrito, la superficie de la pista y la duración del empujón"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "A fair test changes only push strength. Keeping the cart, surface, and push duration the same helps isolate its effect.",
+      "explanationEs": "Una prueba justa cambia solo la intensidad del empujón. Mantener iguales el carrito, la superficie y la duración permite estudiar únicamente ese efecto."
+    },
+    {
+      "id": "blank-2",
+      "prompt": "A force is a push or a ___.",
+      "promptEs": "Una fuerza es un empujón o un ___.",
+      "options": [
+        "pull",
+        "speed",
+        "temperature",
+        "mass"
+      ],
+      "optionsEs": [
+        "tirón",
+        "tipo de velocidad",
+        "cambio de temperatura",
+        "valor de masa"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Push and pull are the two everyday words used to describe a force.",
+      "explanationEs": "Empujón y tirón son dos palabras cotidianas para describir una fuerza."
+    },
+    {
+      "id": "blank-3",
+      "prompt": "Equal opposite forces that cancel are called ___ forces.",
+      "promptEs": "Las fuerzas opuestas que se cancelan se llaman fuerzas ___.",
+      "options": [
+        "balanced",
+        "unbalanced",
+        "increasing",
+        "rotating"
+      ],
+      "optionsEs": [
+        "equilibradas",
+        "desequilibradas",
+        "crecientes",
+        "giratorias"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Balanced forces have a net force of zero.",
+      "explanationEs": "Las fuerzas equilibradas tienen una fuerza neta igual a cero."
+    },
+    {
+      "id": "blank-4",
+      "prompt": "With 10 N right and 4 N left, the net force is ___ N to the right.",
+      "promptEs": "Con 10 N a la derecha y 4 N a la izquierda, la fuerza neta es ___ N a la derecha.",
+      "options": [
+        "6",
+        "14",
+        "4",
+        "0"
+      ],
+      "optionsEs": [
+        "6",
+        "14",
+        "4",
+        "0"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Subtract opposite forces: 10 minus 4 = 6 N to the right.",
+      "explanationEs": "Resta las fuerzas opuestas: 10 menos 4 = 6 N hacia la derecha."
+    },
+    {
+      "id": "blank-5",
+      "prompt": "The force between surfaces that opposes sliding is ___.",
+      "promptEs": "La fuerza entre superficies que se opone al deslizamiento es la ___.",
+      "options": [
+        "friction",
+        "gravity",
+        "speed",
+        "mass"
+      ],
+      "optionsEs": [
+        "fricción",
+        "gravedad",
+        "velocidad",
+        "masa"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Friction resists relative sliding between surfaces in contact.",
+      "explanationEs": "La fricción se opone al deslizamiento relativo entre superficies en contacto."
+    },
+    {
+      "id": "blank-6",
+      "prompt": "Gravity is an example of a ___ force.",
+      "promptEs": "La gravedad es un ejemplo de fuerza ___.",
+      "options": [
+        "non-contact",
+        "contact-only",
+        "friction-only",
+        "zero"
+      ],
+      "optionsEs": [
+        "sin contacto",
+        "solo de contacto",
+        "solo de fricción",
+        "nula"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Gravity acts between masses without requiring them to touch.",
+      "explanationEs": "La gravedad actúa entre masas sin que tengan que tocarse."
+    },
+    {
+      "id": "blank-7",
+      "prompt": "For the same nonzero net force, a cart with less mass has ___ acceleration.",
+      "promptEs": "Con la misma fuerza neta distinta de cero, un carrito de menor masa tiene una aceleración ___.",
+      "options": [
+        "greater",
+        "smaller",
+        "zero",
+        "the same"
+      ],
+      "optionsEs": [
+        "mayor",
+        "menor",
+        "nula",
+        "igual"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Less mass means greater acceleration for the same net force.",
+      "explanationEs": "Una masa menor produce mayor aceleración con la misma fuerza neta."
+    },
+    {
+      "id": "blank-8",
+      "prompt": "Complete the English sentence: The hands ___ pushing the box.",
+      "promptEs": "Completa la oración: Las manos ___ empujando la caja.",
+      "options": [
+        "are",
+        "is",
+        "am",
+        "be"
+      ],
+      "optionsEs": [
+        "están",
+        "está",
+        "estoy",
+        "estar"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Hands is plural, so use are rather than is.",
+      "explanationEs": "Hands es plural; por eso se usa are y no is."
+    },
+    {
+      "id": "blank-9",
+      "prompt": "A parachute slows a fall by increasing air ___.",
+      "promptEs": "Un paracaídas frena una caída al aumentar la ___ del aire.",
+      "options": [
+        "resistance",
+        "mass",
+        "gravity",
+        "temperature"
+      ],
+      "optionsEs": [
+        "resistencia",
+        "masa",
+        "gravedad",
+        "temperatura"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "An open parachute increases the force from air opposing the fall.",
+      "explanationEs": "Un paracaídas abierto aumenta la fuerza del aire que se opone a la caída."
+    },
+    {
+      "id": "blank-10",
+      "prompt": "The wall pushes back in the ___ direction to the student's push.",
+      "promptEs": "La pared empuja en sentido ___ al empujón del estudiante.",
+      "options": [
+        "opposite",
+        "same",
+        "zero",
+        "bright"
+      ],
+      "optionsEs": [
+        "opuesto",
+        "igual",
+        "nulo",
+        "brillante"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Action and reaction forces are equal and opposite and act on different objects.",
+      "explanationEs": "La acción y la reacción son fuerzas iguales y opuestas que actúan sobre objetos distintos."
+    },
+    {
+      "id": "odd-2",
+      "prompt": "Which is NOT a contact force?",
+      "promptEs": "¿Cuál NO es una fuerza de contacto?",
+      "options": [
+        "friction",
+        "a hand pushing a box",
+        "tension in a rope",
+        "gravity"
+      ],
+      "optionsEs": [
+        "fricción",
+        "una mano que empuja una caja",
+        "tensión en una cuerda",
+        "gravedad"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Gravity can act without contact; the other interactions require touching materials.",
+      "explanationEs": "La gravedad actúa sin contacto; las otras interacciones requieren materiales que se toquen."
+    },
+    {
+      "id": "odd-3",
+      "prompt": "Which is NOT a unit or symbol used for force?",
+      "promptEs": "¿Cuál NO es una unidad o símbolo de fuerza?",
+      "options": [
+        "N",
+        "newtons",
+        "kilonewtons",
+        "kilograms"
+      ],
+      "optionsEs": [
+        "N",
+        "newtons",
+        "kilonewtons",
+        "kilogramos"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Kilograms measure mass. N means newtons, and a kilonewton is 1000 newtons.",
+      "explanationEs": "Los kilogramos miden masa. N significa newtons y un kilonewton equivale a 1000 newtons."
+    },
+    {
+      "id": "odd-4",
+      "prompt": "For a book sliding horizontally on a flat table, which force does NOT oppose the horizontal motion?",
+      "promptEs": "Para un libro que se desliza horizontalmente en una mesa plana, ¿qué fuerza NO se opone a ese movimiento horizontal?",
+      "options": [
+        "sliding friction",
+        "friction from a rough surface",
+        "air resistance",
+        "Earth's downward gravity"
+      ],
+      "optionsEs": [
+        "fricción de deslizamiento",
+        "fricción de una superficie rugosa",
+        "resistencia del aire",
+        "la gravedad terrestre hacia abajo"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Gravity acts downward, not opposite the horizontal motion on a level table.",
+      "explanationEs": "La gravedad actúa hacia abajo, no en sentido contrario al movimiento horizontal en una mesa nivelada."
+    },
+    {
+      "id": "odd-5",
+      "prompt": "Which force pair does NOT have zero net horizontal force?",
+      "promptEs": "¿Qué pareja de fuerzas NO tiene fuerza neta horizontal igual a cero?",
+      "options": [
+        "4 N left and 4 N right",
+        "6 N left and 6 N right",
+        "8 N left and 8 N right",
+        "6 N right and 2 N left"
+      ],
+      "optionsEs": [
+        "4 N a la izquierda y 4 N a la derecha",
+        "6 N a la izquierda y 6 N a la derecha",
+        "8 N a la izquierda y 8 N a la derecha",
+        "6 N a la derecha y 2 N a la izquierda"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "The last pair has a net force of 4 N to the right.",
+      "explanationEs": "La última pareja tiene una fuerza neta de 4 N hacia la derecha."
+    },
+    {
+      "id": "odd-6",
+      "prompt": "Which is NOT a push or pull applied by a person?",
+      "promptEs": "¿Cuál NO es un empujón o tirón aplicado por una persona?",
+      "options": [
+        "pushing a door",
+        "pulling a wagon",
+        "kicking a ball",
+        "Earth attracting an apple"
+      ],
+      "optionsEs": [
+        "empujar una puerta",
+        "tirar de un carrito",
+        "patear una pelota",
+        "la Tierra atrayendo una manzana"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Earth attracts the apple through gravity, not a person's applied force.",
+      "explanationEs": "La Tierra atrae la manzana por gravedad, no por una fuerza aplicada por una persona."
+    },
+    {
+      "id": "odd-7",
+      "prompt": "Which word is NOT a direction?",
+      "promptEs": "¿Qué palabra NO indica una dirección?",
+      "options": [
+        "left",
+        "right",
+        "upward",
+        "newton"
+      ],
+      "optionsEs": [
+        "izquierda",
+        "derecha",
+        "hacia arriba",
+        "newton"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "A newton is a force unit, not a direction.",
+      "explanationEs": "Un newton es una unidad de fuerza, no una dirección."
+    },
+    {
+      "id": "odd-8",
+      "prompt": "Which action does NOT increase a cart's mass?",
+      "promptEs": "¿Qué acción NO aumenta la masa de un carrito?",
+      "options": [
+        "adding books",
+        "adding a box",
+        "adding weights",
+        "pushing harder"
+      ],
+      "optionsEs": [
+        "añadir libros",
+        "añadir una caja",
+        "añadir pesas",
+        "empujar con más fuerza"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "A stronger push changes force, not the amount of matter in the cart.",
+      "explanationEs": "Un empujón mayor cambia la fuerza, no la cantidad de materia del carrito."
+    },
+    {
+      "id": "odd-9",
+      "prompt": "Which phrase does NOT describe balanced forces?",
+      "promptEs": "¿Qué frase NO describe fuerzas equilibradas?",
+      "options": [
+        "equal and opposite",
+        "zero net force",
+        "no change in velocity",
+        "a greater force on one side"
+      ],
+      "optionsEs": [
+        "iguales y opuestas",
+        "fuerza neta igual a cero",
+        "sin cambio de velocidad",
+        "una fuerza mayor en un lado"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "A greater force on one side makes the forces unbalanced.",
+      "explanationEs": "Una fuerza mayor en un lado produce fuerzas desequilibradas."
+    },
+    {
+      "id": "odd-10",
+      "prompt": "Which action does NOT make a fair test of push strength?",
+      "promptEs": "¿Qué acción NO permite una prueba justa de la intensidad del empujón?",
+      "options": [
+        "keeping cart mass the same",
+        "using the same track",
+        "keeping push duration the same",
+        "changing both cart mass and push strength"
+      ],
+      "optionsEs": [
+        "mantener la misma masa del carrito",
+        "usar la misma pista",
+        "mantener la duración del empujón",
+        "cambiar la masa y la intensidad del empujón"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Changing mass and force together makes it difficult to identify the effect of force alone.",
+      "explanationEs": "Cambiar masa y fuerza a la vez dificulta identificar el efecto de la fuerza por sí sola."
+    },
+    {
+      "id": "match-2",
+      "prompt": "Match force types to their descriptions.",
+      "promptEs": "Relaciona los tipos de fuerza con sus descripciones.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Gravity",
+          "right": "Attraction between masses",
+          "leftEs": "Gravedad",
+          "rightEs": "Atracción entre masas"
+        },
+        {
+          "left": "Friction",
+          "right": "Resistance to sliding between surfaces",
+          "leftEs": "Fricción",
+          "rightEs": "Resistencia al deslizamiento entre superficies"
+        },
+        {
+          "left": "Air resistance",
+          "right": "Force from air opposing motion",
+          "leftEs": "Resistencia del aire",
+          "rightEs": "Fuerza del aire que se opone al movimiento"
+        },
+        {
+          "left": "Applied force",
+          "right": "A direct push or pull from an object or person",
+          "leftEs": "Fuerza aplicada",
+          "rightEs": "Un empujón o tirón directo de una persona u objeto"
+        }
+      ],
+      "explanation": "Name a force by the interaction that produces it.",
+      "explanationEs": "Identifica una fuerza por la interacción que la produce."
+    },
+    {
+      "id": "match-3",
+      "prompt": "Match force vocabulary to definitions.",
+      "promptEs": "Relaciona el vocabulario de fuerzas con sus definiciones.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Net force",
+          "right": "The total force after combining all forces",
+          "leftEs": "Fuerza neta",
+          "rightEs": "La fuerza total al combinar todas las fuerzas"
+        },
+        {
+          "left": "Balanced forces",
+          "right": "Forces that combine to zero",
+          "leftEs": "Fuerzas equilibradas",
+          "rightEs": "Fuerzas cuya suma es cero"
+        },
+        {
+          "left": "Unbalanced forces",
+          "right": "Forces that produce a nonzero total",
+          "leftEs": "Fuerzas desequilibradas",
+          "rightEs": "Fuerzas que producen una suma distinta de cero"
+        },
+        {
+          "left": "Newton",
+          "right": "The SI unit of force",
+          "leftEs": "Newton",
+          "rightEs": "La unidad de fuerza del SI"
+        }
+      ],
+      "explanation": "Net force tells whether the combined forces change motion.",
+      "explanationEs": "La fuerza neta indica si las fuerzas combinadas cambian el movimiento."
+    },
+    {
+      "id": "match-4",
+      "prompt": "Match action words to their meanings.",
+      "promptEs": "Relaciona las palabras de acción con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Push",
+          "right": "Apply a force away from you",
+          "leftEs": "Empujar",
+          "rightEs": "Aplicar una fuerza para alejar algo"
+        },
+        {
+          "left": "Pull",
+          "right": "Apply a force toward you",
+          "leftEs": "Tirar",
+          "rightEs": "Aplicar una fuerza para acercar algo"
+        },
+        {
+          "left": "Oppose",
+          "right": "Act against something",
+          "leftEs": "Oponerse",
+          "rightEs": "Actuar en contra de algo"
+        },
+        {
+          "left": "Balance",
+          "right": "Cancel with an equal opposite force",
+          "leftEs": "Equilibrar",
+          "rightEs": "Cancelar con una fuerza igual y opuesta"
+        }
+      ],
+      "explanation": "These verbs describe how forces act and interact.",
+      "explanationEs": "Estos verbos describen cómo actúan e interactúan las fuerzas."
+    },
+    {
+      "id": "match-5",
+      "prompt": "Match each pair of forces to its net force.",
+      "promptEs": "Relaciona cada pareja de fuerzas con su fuerza neta.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "9 N right and 4 N left",
+          "right": "5 N right",
+          "leftEs": "9 N a la derecha y 4 N a la izquierda",
+          "rightEs": "5 N a la derecha"
+        },
+        {
+          "left": "8 N left and 3 N right",
+          "right": "5 N left",
+          "leftEs": "8 N a la izquierda y 3 N a la derecha",
+          "rightEs": "5 N a la izquierda"
+        },
+        {
+          "left": "6 N right and 6 N left",
+          "right": "0 N",
+          "leftEs": "6 N a la derecha y 6 N a la izquierda",
+          "rightEs": "0 N"
+        },
+        {
+          "left": "3 N right and 7 N right",
+          "right": "10 N right",
+          "leftEs": "3 N a la derecha y 7 N a la derecha",
+          "rightEs": "10 N a la derecha"
+        }
+      ],
+      "explanation": "Add forces in the same direction and subtract forces in opposite directions.",
+      "explanationEs": "Suma las fuerzas del mismo sentido y resta las de sentidos opuestos."
+    },
+    {
+      "id": "match-6",
+      "prompt": "Match everyday examples to their main force.",
+      "promptEs": "Relaciona los ejemplos cotidianos con su fuerza principal.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Shoes gripping the floor",
+          "right": "Friction",
+          "leftEs": "Zapatos que se agarran al suelo",
+          "rightEs": "Fricción"
+        },
+        {
+          "left": "An apple falling",
+          "right": "Gravity",
+          "leftEs": "Una manzana que cae",
+          "rightEs": "Gravedad"
+        },
+        {
+          "left": "A hand pushing a door",
+          "right": "Applied force",
+          "leftEs": "Una mano que empuja una puerta",
+          "rightEs": "Fuerza aplicada"
+        },
+        {
+          "left": "An open parachute slowing a fall",
+          "right": "Air resistance",
+          "leftEs": "Un paracaídas abierto que frena una caída",
+          "rightEs": "Resistencia del aire"
+        }
+      ],
+      "explanation": "Look for the interacting objects: surfaces, masses, a hand, or air.",
+      "explanationEs": "Busca qué interactúa: superficies, masas, una mano o el aire."
+    },
+    {
+      "id": "match-7",
+      "prompt": "Match investigation roles in a test of push strength.",
+      "promptEs": "Relaciona los elementos de una investigación sobre la intensidad de un empujón.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Changed variable",
+          "right": "Push strength",
+          "leftEs": "Variable que se cambia",
+          "rightEs": "Intensidad del empujón"
+        },
+        {
+          "left": "One controlled variable",
+          "right": "Cart mass",
+          "leftEs": "Una variable controlada",
+          "rightEs": "Masa del carrito"
+        },
+        {
+          "left": "Measured outcome",
+          "right": "Change in speed",
+          "leftEs": "Resultado medido",
+          "rightEs": "Cambio de velocidad"
+        },
+        {
+          "left": "Timing tool",
+          "right": "Stopwatch",
+          "leftEs": "Instrumento para medir tiempo",
+          "rightEs": "Cronómetro"
+        }
+      ],
+      "explanation": "Change one variable and keep other relevant conditions the same.",
+      "explanationEs": "Cambia una variable y mantén iguales las demás condiciones relevantes."
+    },
+    {
+      "id": "match-8",
+      "prompt": "Match these force statements to their totals.",
+      "promptEs": "Relaciona estas fuerzas con sus resultados totales.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "4 N left and 4 N right",
+          "right": "Zero net force",
+          "leftEs": "4 N a la izquierda y 4 N a la derecha",
+          "rightEs": "Fuerza neta cero"
+        },
+        {
+          "left": "8 N right and 3 N left",
+          "right": "Net force of 5 N right",
+          "leftEs": "8 N a la derecha y 3 N a la izquierda",
+          "rightEs": "Fuerza neta de 5 N a la derecha"
+        },
+        {
+          "left": "8 N left and 3 N right",
+          "right": "Net force of 5 N left",
+          "leftEs": "8 N a la izquierda y 3 N a la derecha",
+          "rightEs": "Fuerza neta de 5 N a la izquierda"
+        },
+        {
+          "left": "8 N right and 3 N right",
+          "right": "Net force of 11 N right",
+          "leftEs": "8 N a la derecha y 3 N a la derecha",
+          "rightEs": "Fuerza neta de 11 N a la derecha"
+        }
+      ],
+      "explanation": "Direction is part of the answer, not just the number of newtons.",
+      "explanationEs": "La dirección forma parte de la respuesta, no solo el número de newtons."
+    },
+    {
+      "id": "match-9",
+      "prompt": "Match interaction ideas to the statements they describe.",
+      "promptEs": "Relaciona las ideas de interacción con sus descripciones.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Balanced forces",
+          "right": "No change in velocity",
+          "leftEs": "Fuerzas equilibradas",
+          "rightEs": "Sin cambio de velocidad"
+        },
+        {
+          "left": "Unbalanced forces",
+          "right": "A nonzero acceleration",
+          "leftEs": "Fuerzas desequilibradas",
+          "rightEs": "Una aceleración distinta de cero"
+        },
+        {
+          "left": "Action and reaction",
+          "right": "Equal opposite forces on different objects",
+          "leftEs": "Acción y reacción",
+          "rightEs": "Fuerzas iguales y opuestas sobre objetos distintos"
+        },
+        {
+          "left": "Frictional heating",
+          "right": "Energy transferred to heat",
+          "leftEs": "Calentamiento por fricción",
+          "rightEs": "Energía transferida al calor"
+        }
+      ],
+      "explanation": "Balanced forces act on one object; an action-reaction pair acts on two different objects.",
+      "explanationEs": "Las fuerzas equilibradas actúan sobre un objeto; acción y reacción actúan sobre dos objetos distintos."
+    },
+    {
+      "id": "match-10",
+      "prompt": "Match contact and force-description words to their meanings.",
+      "promptEs": "Relaciona las palabras de contacto y descripción de fuerzas con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Contact force",
+          "right": "Requires touching",
+          "leftEs": "Fuerza de contacto",
+          "rightEs": "Requiere contacto"
+        },
+        {
+          "left": "Non-contact force",
+          "right": "Acts without touching",
+          "leftEs": "Fuerza sin contacto",
+          "rightEs": "Actúa sin contacto"
+        },
+        {
+          "left": "Magnitude",
+          "right": "The size of a force",
+          "leftEs": "Magnitud",
+          "rightEs": "El tamaño de una fuerza"
+        },
+        {
+          "left": "Direction",
+          "right": "Which way a force acts",
+          "leftEs": "Dirección",
+          "rightEs": "Hacia dónde actúa una fuerza"
+        }
+      ],
+      "explanation": "A force description needs both a magnitude and a direction.",
+      "explanationEs": "Para describir una fuerza se necesitan magnitud y dirección."
     }
   ]
 }

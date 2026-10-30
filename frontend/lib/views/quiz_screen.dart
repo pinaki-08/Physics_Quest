@@ -5,63 +5,79 @@ import 'package:flutter/material.dart';
 
 import '../data/progress_repository.dart';
 import '../models/lesson.dart';
+import '../services/lesson_narration.dart';
+import '../services/speech.dart';
 import '../theme.dart';
 import '../widgets/back_bar.dart';
 import '../widgets/bouncy.dart';
+import '../widgets/vocabulary_text.dart';
 
 /// Options are shuffled per run. Without this the seeded answer index of 0
 /// would make the first option correct every single time.
 class _Shuffled {
   final String prompt;
+  final String promptEs;
   final List<String> options;
+  final List<String> optionsEs;
   final int answer;
   final int points;
   final QuestionKind kind;
   final List<MatchPair> pairs;
-  final List<String> rights;
+  final List<int> rightOrder;
   final String explanation;
+  final String explanationEs;
 
   const _Shuffled({
     required this.prompt,
+    this.promptEs = '',
     required this.options,
+    this.optionsEs = const [],
     required this.answer,
     required this.points,
     required this.kind,
     required this.pairs,
-    required this.rights,
+    required this.rightOrder,
     required this.explanation,
+    this.explanationEs = '',
   });
 
   factory _Shuffled.from(Question q, math.Random rng) {
     if (q.kind == QuestionKind.match) {
       final pairs = [...q.pairs]..shuffle(rng);
-      final rights = [for (final p in q.pairs) p.right]..shuffle(rng);
+      final rightOrder = List<int>.generate(pairs.length, (index) => index)
+        ..shuffle(rng);
       return _Shuffled(
         prompt: q.prompt,
+        promptEs: q.hasSpanishTranslation ? q.promptEs : '',
         options: const [],
         answer: 0,
         points: q.points,
         kind: q.kind,
         pairs: pairs,
-        rights: rights,
+        rightOrder: rightOrder,
         explanation: q.explanation,
+        explanationEs: q.hasSpanishTranslation ? q.explanationEs : '',
       );
     }
     final order = List<int>.generate(q.options.length, (i) => i)..shuffle(rng);
     return _Shuffled(
       prompt: q.prompt,
+      promptEs: q.hasSpanishTranslation ? q.promptEs : '',
       options: [for (final i in order) q.options[i]],
+      optionsEs: q.hasSpanishTranslation
+          ? [for (final i in order) q.optionsEs[i]]
+          : const [],
       answer: order.indexOf(q.answer),
       points: q.points,
       kind: q.kind,
       pairs: const [],
-      rights: const [],
+      rightOrder: const [],
       explanation: q.explanation,
+      explanationEs: q.hasSpanishTranslation ? q.explanationEs : '',
     );
   }
 
-  /// Matching needs longer than a single tap-to-answer question.
-  int get seconds => kind == QuestionKind.match ? 45 : 20;
+  bool get hasSpanishTranslation => promptEs.isNotEmpty;
 }
 
 class QuizScreen extends StatefulWidget {
@@ -69,6 +85,7 @@ class QuizScreen extends StatefulWidget {
   final String title;
   final Color color;
   final List<Question> questions;
+  final List<GlossaryTerm> glossary;
 
   const QuizScreen({
     super.key,
@@ -76,19 +93,19 @@ class QuizScreen extends StatefulWidget {
     required this.title,
     required this.color,
     required this.questions,
+    this.glossary = const [],
   });
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _QuizScreenState extends State<QuizScreen>
-    with SingleTickerProviderStateMixin {
+class _QuizScreenState extends State<QuizScreen> {
   static const _maxLives = 3;
   static const _maxTries = 3;
 
   late List<_Shuffled> _deck;
-  late final AnimationController _clock;
+  final _scroll = ScrollController();
 
   int _index = 0;
   int _score = 0;
@@ -98,39 +115,35 @@ class _QuizScreenState extends State<QuizScreen>
   int _lives = _maxLives;
   int _lastAward = 0;
   bool _finished = false;
-  Timer? _advance;
 
   /// Per question state.
   final _wrong = <int>{};
   bool _settled = false;
   bool _gotIt = false;
-  bool _timedOut = false;
+  bool _showSpanish = false;
+  bool _hasSpoken = false;
+  bool _advancing = false;
+  int? _selectedOption;
+
+  late final List<GlossaryTerm> _glossary = {
+    for (final term in widget.glossary) term.en.toLowerCase(): term,
+  }.values.toList();
 
   _Shuffled get _question => _deck[_index];
+  String get _prefix => _question.kind.name;
   int get _triesLeft => _maxTries - _wrong.length;
 
-  /// Answering several in a row is worth more than answering many slowly.
+  /// Consecutive correct answers increase the points multiplier.
   int get _multiplier => _streak >= 4
       ? 3
       : _streak >= 2
-          ? 2
-          : 1;
+      ? 2
+      : 1;
 
   @override
   void initState() {
     super.initState();
     _deal();
-    _clock = AnimationController(vsync: this, duration: Duration.zero)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed && !_settled) _timeUp();
-      });
-    _startClock();
-  }
-
-  void _startClock() {
-    _clock
-      ..duration = Duration(seconds: _question.seconds)
-      ..forward(from: 0);
   }
 
   void _deal() {
@@ -140,20 +153,9 @@ class _QuizScreenState extends State<QuizScreen>
 
   @override
   void dispose() {
-    _advance?.cancel();
-    _clock.dispose();
+    if (_hasSpoken) unawaited(TermSpeaker.instance.stop());
+    _scroll.dispose();
     super.dispose();
-  }
-
-  void _timeUp() {
-    setState(() {
-      _settled = true;
-      _gotIt = false;
-      _timedOut = true;
-      _streak = 0;
-      _lives--;
-      _lastAward = 0;
-    });
   }
 
   /// A wrong tap costs a try, not the question. Only running out of tries
@@ -161,34 +163,29 @@ class _QuizScreenState extends State<QuizScreen>
   void _choose(int option) {
     if (_settled) return;
     if (option == _question.answer) {
-      _clock.stop();
       final attempt = _wrong.length;
-      final speedBonus = attempt == 0 ? ((1 - _clock.value) * 10).round() : 0;
       final share = attempt == 0
           ? 1.0
           : attempt == 1
-              ? 0.5
-              : 0.25;
+          ? 0.5
+          : 0.25;
       setState(() {
         _settled = true;
         _gotIt = true;
         _score++;
         _streak++;
         _bestStreak = math.max(_bestStreak, _streak);
-        _lastAward =
-            (_question.points * _multiplier * share).round() + speedBonus;
+        _lastAward = (_question.points * _multiplier * share).round();
         _points += _lastAward;
       });
-      // A clean first-time answer needs no explanation, so it flows on.
-      if (attempt == 0) {
-        _advance = Timer(const Duration(milliseconds: 1200), _next);
-      }
       return;
     }
 
-    setState(() => _wrong.add(option));
+    setState(() {
+      _wrong.add(option);
+      _selectedOption = null;
+    });
     if (_wrong.length >= _maxTries) {
-      _clock.stop();
       setState(() {
         _settled = true;
         _gotIt = false;
@@ -200,30 +197,39 @@ class _QuizScreenState extends State<QuizScreen>
   }
 
   Future<void> _next() async {
-    if (!mounted) return;
-    final lastQuestion = _index + 1 >= _deck.length;
-    if (_lives <= 0 || lastQuestion) {
-      setState(() => _finished = true);
-      await progressRepository.recordAttempt(
-        quizId: widget.quizId,
-        score: _score,
-        total: _deck.length,
-        points: _points,
-      );
-      return;
+    if (_advancing || !mounted || !_settled || _finished) return;
+    _advancing = true;
+    try {
+      await _stopAudio();
+      if (!mounted) return;
+      final lastQuestion = _index + 1 >= _deck.length;
+      if (_lives <= 0 || lastQuestion) {
+        setState(() => _finished = true);
+        await progressRepository.recordAttempt(
+          quizId: widget.quizId,
+          score: _score,
+          total: _deck.length,
+          points: _points,
+        );
+        return;
+      }
+      setState(() {
+        _index++;
+        _wrong.clear();
+        _settled = false;
+        _gotIt = false;
+        _showSpanish = false;
+        _selectedOption = null;
+      });
+      if (_scroll.hasClients) _scroll.jumpTo(0);
+    } finally {
+      _advancing = false;
     }
-    setState(() {
-      _index++;
-      _wrong.clear();
-      _settled = false;
-      _gotIt = false;
-      _timedOut = false;
-    });
-    _startClock();
   }
 
-  void _restart() {
-    _advance?.cancel();
+  Future<void> _restart() async {
+    await _stopAudio();
+    if (!mounted) return;
     setState(() {
       _deal();
       _index = 0;
@@ -235,43 +241,133 @@ class _QuizScreenState extends State<QuizScreen>
       _wrong.clear();
       _settled = false;
       _gotIt = false;
-      _timedOut = false;
       _finished = false;
+      _showSpanish = false;
+      _selectedOption = null;
     });
-    _startClock();
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
+  Future<void> _speak(String text, {required bool spanish}) async {
+    _hasSpoken = true;
+    await TermSpeaker.instance.speak(
+      scienceTextNarration(text, spanish: spanish),
+      spanish: spanish,
+    );
+  }
+
+  Future<void> _stopAudio() async {
+    if (!_hasSpoken) return;
+    _hasSpoken = false;
+    await TermSpeaker.instance.stop();
+  }
+
+  void _selectOption(int option) {
+    if (_settled || _wrong.contains(option)) return;
+    setState(() => _selectedOption = option);
+  }
+
+  void _checkAnswer() {
+    final selected = _selectedOption;
+    if (selected != null) _choose(selected);
+  }
+
+  Widget _languageButton(String key) {
+    return TextButton.icon(
+      key: ValueKey(key),
+      onPressed: () => setState(() => _showSpanish = !_showSpanish),
+      icon: const Icon(Icons.translate_rounded, size: 16),
+      label: Text(_showSpanish ? 'English' : 'Español'),
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.learnDeep,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      ),
+    );
+  }
+
+  String? _filledWord({required bool spanish}) {
+    if (_question.kind != QuestionKind.blank) return null;
+    final index = _settled ? _question.answer : _selectedOption;
+    if (index == null) return null;
+    return spanish ? _question.optionsEs[index] : _question.options[index];
+  }
+
+  String _spokenPrompt({required bool spanish}) {
+    final prompt = spanish ? _question.promptEs : _question.prompt;
+    final filled = _filledWord(spanish: spanish);
+    return filled == null ? prompt : prompt.replaceAll('___', filled);
+  }
+
+  String _spokenExplanation({required bool spanish}) {
+    final q = _question;
+    final explanation = spanish ? q.explanationEs : q.explanation;
+    if (q.kind == QuestionKind.match) return explanation;
+    final answer = spanish ? q.optionsEs[q.answer] : q.options[q.answer];
+    return '${spanish ? 'La respuesta es' : 'The answer is'} $answer. '
+        '$explanation';
   }
 
   Widget _prompt() {
     final q = _question;
     return Container(
+      key: ValueKey('$_prefix-question-card'),
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.line),
-        boxShadow: glow(widget.color, opacity: 0.14, blur: 18),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _KindTag(kind: q.kind),
-          const SizedBox(height: 10),
-          if (q.kind == QuestionKind.blank)
-            _BlankSentence(
-              sentence: q.prompt,
-              filled: _settled ? q.options[q.answer] : null,
-              color: widget.color,
-            )
-          else
-            Text(
-              q.prompt,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
+          VocabularyText(
+            key: ValueKey('$_prefix-prompt'),
+            text: _showSpanish ? q.promptEs : q.prompt,
+            terms: _showSpanish ? const [] : _glossary,
+            blankFill: _filledWord(spanish: _showSpanish),
+            blankLabel: _showSpanish ? 'espacio en blanco' : 'blank',
+            onSpeak: _speak,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _PracticeAudioControls(
+                  keyPrefix: '$_prefix-prompt-audio',
+                  english: _spokenPrompt(spanish: false),
+                  spanishText: q.hasSpanishTranslation
+                      ? _spokenPrompt(spanish: true)
+                      : null,
+                  onSpeak: _speak,
+                  onStop: _stopAudio,
+                ),
+              ),
+              if (q.hasSpanishTranslation)
+                _languageButton('$_prefix-language-toggle'),
+            ],
+          ),
+          if (!q.hasSpanishTranslation)
+            const Text(
+              'Spanish translation is not available for this question yet.',
+              style: TextStyle(fontSize: 12, color: AppColors.inkSoft),
+            ),
+          if (!_showSpanish && _glossary.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            const Text(
+              'Tap a highlighted word for help.',
+              style: TextStyle(
+                fontSize: 12,
                 height: 1.35,
+                color: AppColors.inkSoft,
               ),
             ),
+          ],
         ],
       ),
     );
@@ -279,123 +375,323 @@ class _QuizScreenState extends State<QuizScreen>
 
   Widget _answerArea() {
     final q = _question;
-    switch (q.kind) {
-      case QuestionKind.match:
-        return _MatchBoard(
-          key: ValueKey(_index),
-          pairs: q.pairs,
-          rights: q.rights,
-          color: widget.color,
-          locked: _settled,
-          onSolved: () => _choose(q.answer),
-        );
-      case QuestionKind.oddOneOut:
-        return _OddGrid(
-          options: q.options,
-          answer: q.answer,
-          wrong: _wrong,
-          settled: _settled,
-          onTap: _choose,
-        );
-      case QuestionKind.blank:
-        return Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: [
-            for (var i = 0; i < q.options.length; i++)
-              _WordChip(
-                text: q.options[i],
+    if (q.kind == QuestionKind.match) {
+      return _MatchBoard(
+        key: ValueKey(_index),
+        pairs: q.pairs,
+        rightOrder: q.rightOrder,
+        showSpanish: _showSpanish,
+        glossary: _glossary,
+        onSpeak: _speak,
+        locked: _settled,
+        onSolved: () => _choose(q.answer),
+      );
+    }
+    return RadioGroup<int>(
+      groupValue: _selectedOption,
+      onChanged: (option) {
+        if (option != null) _selectOption(option);
+      },
+      child: Column(
+        children: [
+          for (var i = 0; i < q.options.length; i++)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _Option(
+                key: ValueKey('$_prefix-option-$i'),
+                prefix: _prefix,
+                index: i,
+                selected: _selectedOption == i,
+                text: _showSpanish ? q.optionsEs[i] : q.options[i],
+                content: _showSpanish
+                    ? null
+                    : VocabularyText(
+                        text: q.options[i],
+                        terms: _glossary,
+                        onSpeak: _speak,
+                        style: const TextStyle(fontSize: 15, height: 1.4),
+                      ),
+                audioMenu: _OptionAudioMenu(
+                  prefix: _prefix,
+                  index: i,
+                  english: q.options[i],
+                  spanishText: q.hasSpanishTranslation ? q.optionsEs[i] : null,
+                  onSpeak: _speak,
+                ),
                 wrong: _wrong.contains(i),
                 correct: i == q.answer,
                 settled: _settled,
-                onTap: () => _choose(i),
+                onTap: () => _selectOption(i),
               ),
-          ],
-        );
-      case QuestionKind.mcq:
-        return Column(
-          children: [
-            for (var i = 0; i < q.options.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _Option(
-                  text: q.options[i],
-                  wrong: _wrong.contains(i),
-                  correct: i == q.answer,
-                  settled: _settled,
-                  onTap: () => _choose(i),
+            ),
+          if (!_settled) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                key: ValueKey('$_prefix-check-answer'),
+                onPressed: _selectedOption == null ? null : _checkAnswer,
+                icon: const Icon(Icons.check_rounded, size: 18),
+                label: Text(
+                  _showSpanish ? 'Comprobar respuesta' : 'Check answer',
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.learnDeep,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(0, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               ),
+            ),
           ],
-        );
-    }
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final needsReview = _settled && (!_gotIt || _wrong.isNotEmpty);
+    final needsReview = _settled;
     return Scaffold(
+      backgroundColor: AppColors.lessonBackground,
       appBar: const BackBar(),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 4, 18, 40),
-        children: [
-          if (_finished)
-            _Result(
-              score: _score,
-              total: _deck.length,
-              points: _points,
-              bestStreak: _bestStreak,
-              survived: _lives > 0,
-              color: widget.color,
-              onRetry: _restart,
-              onDone: () => Navigator.of(context).pop(),
-            )
-          else ...[
-            _StatusBar(
-              lives: _lives,
-              maxLives: _maxLives,
-              streak: _streak,
-              multiplier: _multiplier,
-              index: _index,
-              total: _deck.length,
-              clock: _clock,
-              seconds: _question.seconds,
-              color: widget.color,
-            ),
-            const SizedBox(height: 16),
-            _prompt(),
-            const SizedBox(height: 16),
-            _answerArea(),
-            const SizedBox(height: 12),
-            _Feedback(
-              settled: _settled,
-              gotIt: _gotIt,
-              award: _lastAward,
-              multiplier: _multiplier,
-              triesLeft: _triesLeft,
-              attempts: _wrong.length,
-              timedOut: _timedOut,
-            ),
-            if (needsReview) ...[
-              const SizedBox(height: 12),
-              _Explanation(
-                answer: _question.kind == QuestionKind.match
-                    ? null
-                    : _question.options[_question.answer],
-                why: _question.explanation,
-              ),
-              const SizedBox(height: 12),
-              _WideButton(
-                label: _index + 1 < _deck.length && _lives > 0
-                    ? 'Next question'
-                    : 'See result',
-                color: widget.color,
-                onTap: _next,
-              ),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          key: const ValueKey('quiz-content'),
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: ListView(
+            controller: _scroll,
+            padding: const EdgeInsets.fromLTRB(18, 12, 18, 40),
+            children: [
+              if (_finished)
+                _Result(
+                  score: _score,
+                  total: _deck.length,
+                  points: _points,
+                  bestStreak: _bestStreak,
+                  survived: _lives > 0,
+                  color: widget.color,
+                  onRetry: _restart,
+                  onDone: () => Navigator.of(context).pop(),
+                )
+              else ...[
+                _StatusBar(
+                  title: widget.title,
+                  kind: _question.kind,
+                  lives: _lives,
+                  maxLives: _maxLives,
+                  multiplier: _multiplier,
+                  index: _index,
+                  total: _deck.length,
+                ),
+                const SizedBox(height: 16),
+                _prompt(),
+                const SizedBox(height: 16),
+                _answerArea(),
+                if (_settled || _wrong.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  _Feedback(
+                    settled: _settled,
+                    gotIt: _gotIt,
+                    award: _lastAward,
+                    multiplier: _multiplier,
+                    triesLeft: _triesLeft,
+                    attempts: _wrong.length,
+                  ),
+                ],
+                if (needsReview) ...[
+                  const SizedBox(height: 12),
+                  _Explanation(
+                    heading: _showSpanish ? 'Explicación' : 'Explanation',
+                    plain: true,
+                    answer: _question.kind == QuestionKind.match
+                        ? null
+                        : (_showSpanish
+                              ? _question.optionsEs[_question.answer]
+                              : _question.options[_question.answer]),
+                    why: _showSpanish
+                        ? _question.explanationEs
+                        : _question.explanation,
+                    spanish: _showSpanish,
+                    content: !_showSpanish
+                        ? VocabularyText(
+                            text: _question.explanation,
+                            terms: _glossary,
+                            onSpeak: _speak,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              height: 1.5,
+                              color: AppColors.ink,
+                            ),
+                          )
+                        : null,
+                    audioControls: Row(
+                      children: [
+                        Expanded(
+                          child: _PracticeAudioControls(
+                            keyPrefix: '$_prefix-explanation-audio',
+                            english: _spokenExplanation(spanish: false),
+                            spanishText: _question.hasSpanishTranslation
+                                ? _spokenExplanation(spanish: true)
+                                : null,
+                            onSpeak: _speak,
+                            onStop: _stopAudio,
+                          ),
+                        ),
+                        if (_question.hasSpanishTranslation)
+                          _languageButton(
+                            '$_prefix-explanation-language-toggle',
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton.icon(
+                    key: ValueKey('$_prefix-next-question'),
+                    onPressed: _next,
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                    label: Text(
+                      _index + 1 < _deck.length && _lives > 0
+                          ? 'Next question'
+                          : 'See result',
+                    ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.learnDeep,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(0, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ],
-          ],
-        ],
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class _PracticeAudioControls extends StatelessWidget {
+  final String keyPrefix;
+  final String english;
+  final String? spanishText;
+  final Future<void> Function(String text, {required bool spanish}) onSpeak;
+  final VoidCallback? onStop;
+
+  const _PracticeAudioControls({
+    required this.keyPrefix,
+    required this.english,
+    required this.spanishText,
+    required this.onSpeak,
+    this.onStop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final translation = spanishText;
+    return Wrap(
+      spacing: 2,
+      runSpacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Tooltip(
+          message: 'Listen in English',
+          child: TextButton.icon(
+            key: ValueKey('$keyPrefix-en'),
+            onPressed: () => onSpeak(english, spanish: false),
+            icon: const Icon(Icons.volume_up_outlined, size: 16),
+            label: const Text('EN'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.inkSoft,
+              minimumSize: const Size(0, 40),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+            ),
+          ),
+        ),
+        Tooltip(
+          message: 'Escuchar en español',
+          child: TextButton.icon(
+            key: ValueKey('$keyPrefix-es'),
+            onPressed: translation == null
+                ? null
+                : () => onSpeak(translation, spanish: true),
+            icon: const Icon(Icons.volume_up_outlined, size: 16),
+            label: const Text('ES'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.inkSoft,
+              minimumSize: const Size(0, 40),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+            ),
+          ),
+        ),
+        if (onStop != null)
+          IconButton(
+            key: ValueKey('$keyPrefix-stop'),
+            tooltip: 'Stop audio',
+            onPressed: onStop,
+            icon: const Icon(Icons.stop_rounded, size: 18),
+            color: AppColors.inkSoft,
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+          ),
+      ],
+    );
+  }
+}
+
+class _OptionAudioMenu extends StatelessWidget {
+  final String prefix;
+  final int index;
+  final String english;
+  final String? spanishText;
+  final Future<void> Function(String text, {required bool spanish}) onSpeak;
+
+  const _OptionAudioMenu({
+    required this.prefix,
+    required this.index,
+    required this.english,
+    required this.spanishText,
+    required this.onSpeak,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<bool>(
+      key: ValueKey('$prefix-option-$index-audio-menu'),
+      tooltip: 'Listen to this answer',
+      icon: const Icon(
+        Icons.volume_up_outlined,
+        size: 20,
+        color: AppColors.inkSoft,
+      ),
+      color: AppColors.surface,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      onSelected: (spanish) {
+        final text = spanish ? spanishText : english;
+        if (text != null) onSpeak(text, spanish: spanish);
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem<bool>(
+          key: ValueKey('$prefix-option-$index-audio-en'),
+          value: false,
+          child: const Text('Listen in English'),
+        ),
+        PopupMenuItem<bool>(
+          key: ValueKey('$prefix-option-$index-audio-es'),
+          value: true,
+          enabled: spanishText != null,
+          child: const Text('Escuchar en español'),
+        ),
+      ],
     );
   }
 }
@@ -404,8 +700,21 @@ class _QuizScreenState extends State<QuizScreen>
 class _Explanation extends StatelessWidget {
   final String? answer;
   final String why;
+  final bool spanish;
+  final Widget? content;
+  final Widget? audioControls;
+  final String? heading;
+  final bool plain;
 
-  const _Explanation({required this.answer, required this.why});
+  const _Explanation({
+    required this.answer,
+    required this.why,
+    this.spanish = false,
+    this.content,
+    this.audioControls,
+    this.heading,
+    this.plain = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -414,229 +723,60 @@ class _Explanation extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surfaceSoft,
+        color: plain ? AppColors.surface : AppColors.surfaceSoft,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.learn.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: plain
+              ? AppColors.line
+              : AppColors.learn.withValues(alpha: 0.3),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.lightbulb_rounded,
-                  size: 18, color: AppColors.learn),
+              const Icon(
+                Icons.lightbulb_rounded,
+                size: 18,
+                color: AppColors.learn,
+              ),
               const SizedBox(width: 8),
-              Text(
-                answer == null ? 'Why' : 'The answer is $answer',
-                style: const TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.learnDeep,
+              Expanded(
+                child: Text(
+                  heading ??
+                      (answer == null
+                          ? (spanish ? 'Por qué' : 'Why')
+                          : (spanish
+                                ? 'La respuesta es $answer'
+                                : 'The answer is $answer')),
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.learnDeep,
+                  ),
                 ),
               ),
             ],
           ),
           if (why.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text(
-              why,
-              style: const TextStyle(
-                fontSize: 13.5,
-                height: 1.45,
-                color: AppColors.ink,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _KindTag extends StatelessWidget {
-  final QuestionKind kind;
-  const _KindTag({required this.kind});
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, icon, color) = switch (kind) {
-      QuestionKind.mcq => ('Multiple choice', Icons.checklist_rounded, AppColors.learn),
-      QuestionKind.blank => ('Fill the blank', Icons.edit_note_rounded, AppColors.play),
-      QuestionKind.oddOneOut => ('Odd one out', Icons.search_off_rounded, AppColors.grape),
-      QuestionKind.match => ('Match up', Icons.compare_arrows_rounded, AppColors.sunshine),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w700,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Renders the sentence with the gap shown as an underline, and drops the
-/// right word in once the answer is revealed.
-class _BlankSentence extends StatelessWidget {
-  final String sentence;
-  final String? filled;
-  final Color color;
-
-  const _BlankSentence({
-    required this.sentence,
-    required this.filled,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final parts = sentence.split('___');
-    const base = TextStyle(fontSize: 17, fontWeight: FontWeight.w600, height: 1.5);
-    return RichText(
-      text: TextSpan(
-        style: base.copyWith(color: AppColors.ink),
-        children: [
-          TextSpan(text: parts.first),
-          if (parts.length > 1) ...[
-            TextSpan(
-              text: filled ?? '            ',
-              style: base.copyWith(
-                color: filled == null ? Colors.transparent : AppColors.play,
-                decoration: TextDecoration.underline,
-                decorationColor: filled == null ? AppColors.inkSoft : AppColors.play,
-                decorationThickness: 2,
-              ),
-            ),
-            TextSpan(text: parts.last),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _WordChip extends StatelessWidget {
-  final String text;
-  final bool wrong;
-  final bool correct;
-  final bool settled;
-  final VoidCallback onTap;
-
-  const _WordChip({
-    required this.text,
-    required this.wrong,
-    required this.correct,
-    required this.settled,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final showRight = settled && correct;
-    final highlight = showRight || wrong;
-    final tone = showRight ? AppColors.play : AppColors.practice;
-    return Bouncy(
-      onTap: settled || wrong ? () {} : onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-        decoration: BoxDecoration(
-          color: highlight ? tone.withValues(alpha: 0.16) : AppColors.surface,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: highlight ? tone : AppColors.line,
-            width: highlight ? 2 : 1,
-          ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: highlight ? tone : AppColors.ink,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OddGrid extends StatelessWidget {
-  final List<String> options;
-  final int answer;
-  final Set<int> wrong;
-  final bool settled;
-  final ValueChanged<int> onTap;
-
-  const _OddGrid({
-    required this.options,
-    required this.answer,
-    required this.wrong,
-    required this.settled,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 1.7,
-      children: [
-        for (var i = 0; i < options.length; i++)
-          Builder(
-            builder: (context) {
-              final showRight = settled && i == answer;
-              final isWrong = wrong.contains(i);
-              final highlight = showRight || isWrong;
-              final tone = showRight ? AppColors.play : AppColors.practice;
-              return Bouncy(
-                onTap: settled || isWrong ? () {} : () => onTap(i),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color:
-                        highlight ? tone.withValues(alpha: 0.16) : AppColors.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: highlight ? tone : AppColors.line,
-                      width: highlight ? 2 : 1,
-                    ),
-                  ),
-                  child: Text(
-                    options[i],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w700,
-                      color: highlight ? tone : AppColors.ink,
-                    ),
+            content ??
+                Text(
+                  why,
+                  style: TextStyle(
+                    fontSize: plain ? 14 : 13.5,
+                    height: plain ? 1.5 : 1.45,
+                    color: AppColors.ink,
                   ),
                 ),
-              );
-            },
-          ),
-      ],
+          ],
+          if (audioControls != null) ...[
+            const SizedBox(height: 12),
+            audioControls!,
+          ],
+        ],
+      ),
     );
   }
 }
@@ -645,16 +785,20 @@ class _OddGrid extends StatelessWidget {
 /// board gets easier as it empties.
 class _MatchBoard extends StatefulWidget {
   final List<MatchPair> pairs;
-  final List<String> rights;
-  final Color color;
+  final List<int> rightOrder;
+  final bool showSpanish;
+  final List<GlossaryTerm> glossary;
+  final Future<void> Function(String text, {required bool spanish}) onSpeak;
   final bool locked;
   final VoidCallback onSolved;
 
   const _MatchBoard({
     super.key,
     required this.pairs,
-    required this.rights,
-    required this.color,
+    required this.rightOrder,
+    required this.showSpanish,
+    required this.glossary,
+    required this.onSpeak,
     required this.locked,
     required this.onSolved,
   });
@@ -664,11 +808,11 @@ class _MatchBoard extends StatefulWidget {
 }
 
 class _MatchBoardState extends State<_MatchBoard> {
-  String? _selectedLeft;
-  String? _wrongRight;
-  final _solved = <String>{};
+  int? _selectedLeft;
+  int? _wrongRight;
+  final _solved = <int>{};
 
-  void _tapLeft(String left) {
+  void _tapLeft(int left) {
     if (widget.locked || _solved.contains(left)) return;
     setState(() {
       _selectedLeft = _selectedLeft == left ? null : left;
@@ -676,13 +820,12 @@ class _MatchBoardState extends State<_MatchBoard> {
     });
   }
 
-  void _tapRight(String right) {
-    if (widget.locked || _selectedLeft == null) return;
-    final expected =
-        widget.pairs.firstWhere((p) => p.left == _selectedLeft!).right;
-    if (right == expected) {
+  void _tapRight(int right) {
+    final left = _selectedLeft;
+    if (widget.locked || left == null || _solved.contains(right)) return;
+    if (right == left) {
       setState(() {
-        _solved.add(_selectedLeft!);
+        _solved.add(left);
         _selectedLeft = null;
         _wrongRight = null;
       });
@@ -692,105 +835,189 @@ class _MatchBoardState extends State<_MatchBoard> {
     }
   }
 
-  bool _rightSolved(String right) =>
-      widget.pairs.any((p) => p.right == right && _solved.contains(p.left));
+  Widget _tile(int index, {required bool left, required String badge}) {
+    final pair = widget.pairs[index];
+    final prefix = left ? 'match-left' : 'match-right';
+    final english = left ? pair.left : pair.right;
+    final spanish = left ? pair.leftEs : pair.rightEs;
+    final text = widget.showSpanish ? spanish : english;
+    return _MatchTile(
+      key: ValueKey('$prefix-$index'),
+      selectionKey: ValueKey('$prefix-$index-select'),
+      badge: badge,
+      text: text,
+      solved: _solved.contains(index),
+      selected: left && _selectedLeft == index,
+      wrong: !left && _wrongRight == index,
+      locked: widget.locked,
+      content: widget.showSpanish
+          ? null
+          : VocabularyText(
+              text: english,
+              terms: widget.glossary,
+              onSpeak: widget.onSpeak,
+              style: const TextStyle(fontSize: 13, height: 1.4),
+            ),
+      audioMenu: _OptionAudioMenu(
+        prefix: prefix,
+        index: index,
+        english: english,
+        spanishText: spanish.isEmpty ? null : spanish,
+        onSpeak: widget.onSpeak,
+      ),
+      onTap: left ? () => _tapLeft(index) : () => _tapRight(index),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            children: [
-              for (final pair in widget.pairs)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _MatchTile(
-                    text: pair.left,
-                    solved: _solved.contains(pair.left),
-                    selected: _selectedLeft == pair.left,
-                    wrong: false,
-                    color: widget.color,
-                    onTap: () => _tapLeft(pair.left),
+        Text(
+          widget.showSpanish
+              ? 'Elige una letra y luego su número correspondiente.'
+              : 'Choose a letter, then its matching number.',
+          style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
+        ),
+        const SizedBox(height: 10),
+        for (var position = 0; position < widget.pairs.length; position++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _tile(
+                    position,
+                    left: true,
+                    badge: String.fromCharCode(65 + position),
                   ),
                 ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            children: [
-              for (final right in widget.rights)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _MatchTile(
-                    text: right,
-                    solved: _rightSolved(right),
-                    selected: false,
-                    wrong: _wrongRight == right,
-                    color: widget.color,
-                    onTap: () => _tapRight(right),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _tile(
+                    widget.rightOrder[position],
+                    left: false,
+                    badge: '${position + 1}',
                   ),
                 ),
-            ],
+              ],
+            ),
+          ),
+        const SizedBox(height: 4),
+        Text(
+          widget.showSpanish
+              ? '${_solved.length}/${widget.pairs.length} parejas'
+              : '${_solved.length}/${widget.pairs.length} matched',
+          key: const ValueKey('match-progress'),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.inkSoft,
           ),
         ),
+        if (_wrongRight != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            widget.showSpanish
+                ? 'Prueba otra pareja.'
+                : 'Try a different pair.',
+            style: const TextStyle(fontSize: 12, color: Color(0xFFAD533B)),
+          ),
+        ],
       ],
     );
   }
 }
 
 class _MatchTile extends StatelessWidget {
+  final Key selectionKey;
+  final String badge;
   final String text;
   final bool solved;
   final bool selected;
   final bool wrong;
-  final Color color;
+  final bool locked;
+  final Widget? content;
+  final Widget audioMenu;
   final VoidCallback onTap;
 
   const _MatchTile({
+    super.key,
+    required this.selectionKey,
+    required this.badge,
     required this.text,
     required this.solved,
     required this.selected,
     required this.wrong,
-    required this.color,
+    required this.locked,
+    required this.audioMenu,
+    this.content,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final tone = solved
-        ? AppColors.play
+        ? AppColors.playDeep
         : wrong
-            ? AppColors.practice
-            : color;
+        ? const Color(0xFFB65D43)
+        : AppColors.learnDeep;
     final active = solved || selected || wrong;
-    return Bouncy(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        height: 58,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: active ? tone.withValues(alpha: 0.16) : AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: active ? tone : AppColors.line,
-            width: active ? 2 : 1,
-          ),
-        ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: active ? tone : AppColors.ink,
+    return Material(
+      color: active ? tone.withValues(alpha: 0.05) : AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: active ? tone : AppColors.line),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: solved || locked ? null : onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 4, 10, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  TextButton(
+                    key: selectionKey,
+                    onPressed: solved || locked ? null : onTap,
+                    style: TextButton.styleFrom(
+                      foregroundColor: tone,
+                      minimumSize: const Size(32, 32),
+                      padding: EdgeInsets.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: solved
+                        ? Icon(
+                            Icons.check_circle_outline_rounded,
+                            size: 19,
+                            color: tone,
+                          )
+                        : Text(
+                            badge,
+                            style: TextStyle(
+                              color: tone,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                  ),
+                  const Spacer(),
+                  audioMenu,
+                ],
+              ),
+              DefaultTextStyle.merge(
+                style: const TextStyle(
+                  color: AppColors.ink,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+                child: content ?? Text(text),
+              ),
+            ],
           ),
         ),
       ),
@@ -799,120 +1026,135 @@ class _MatchTile extends StatelessWidget {
 }
 
 class _StatusBar extends StatelessWidget {
+  final String title;
+  final QuestionKind kind;
   final int lives;
   final int maxLives;
-  final int streak;
   final int multiplier;
   final int index;
   final int total;
-  final Animation<double> clock;
-  final int seconds;
-  final Color color;
 
   const _StatusBar({
+    required this.title,
+    required this.kind,
     required this.lives,
     required this.maxLives,
-    required this.streak,
     required this.multiplier,
     required this.index,
     required this.total,
-    required this.clock,
-    required this.seconds,
-    required this.color,
   });
+
+  Widget _hearts({double size = 20, Color color = AppColors.practice}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < maxLives; i++)
+          Padding(
+            padding: const EdgeInsets.only(right: 3),
+            child: Icon(
+              i < lives
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              size: size,
+              color: i < lives
+                  ? color
+                  : AppColors.inkSoft.withValues(alpha: 0.4),
+            ),
+          ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            for (var i = 0; i < maxLives; i++)
-              Padding(
-                padding: const EdgeInsets.only(right: 3),
-                child: Icon(
-                  i < lives
-                      ? Icons.favorite_rounded
-                      : Icons.favorite_border_rounded,
-                  size: 20,
-                  color: i < lives
-                      ? AppColors.practice
-                      : AppColors.inkSoft.withValues(alpha: 0.4),
-                ),
-              ),
-          ],
-        ),
-        const Spacer(),
-        if (multiplier > 1)
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: AppColors.sunshine.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.local_fire_department_rounded,
-                    size: 15, color: Color(0xFFE07C00)),
-                const SizedBox(width: 3),
-                Text(
-                  '${multiplier}x',
-                  style: const TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFFE07C00),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        Text(
-          '${index + 1}/$total',
-          style: TextStyle(
-            fontSize: 13.5,
-            fontWeight: FontWeight.w700,
-            color: color,
-          ),
-        ),
-        const SizedBox(width: 10),
-        AnimatedBuilder(
-          animation: clock,
-          builder: (context, _) {
-            final left = ((1 - clock.value) * seconds).ceil();
-            // Turns red in the last few seconds to create urgency.
-            final urgent = left <= 5;
-            return SizedBox(
-              width: 38,
-              height: 38,
-              child: Stack(
-                alignment: Alignment.center,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 38,
-                    height: 38,
-                    child: CircularProgressIndicator(
-                      value: 1 - clock.value,
-                      strokeWidth: 4,
-                      backgroundColor: AppColors.line,
-                      valueColor: AlwaysStoppedAnimation(
-                        urgent ? AppColors.practice : color,
-                      ),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink,
                     ),
                   ),
-                  Text(
-                    '$left',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: urgent ? AppColors.practice : AppColors.ink,
-                    ),
+                  const SizedBox(height: 5),
+                  Wrap(
+                    spacing: 7,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        kind.title,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.inkSoft,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 2,
+                        height: 2,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: AppColors.inkSoft,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                      const Text(
+                        'No timer',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.inkSoft,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            );
-          },
+            ),
+            if (multiplier > 1) ...[
+              Text(
+                '${multiplier}x',
+                style: const TextStyle(
+                  color: AppColors.playDeep,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${index + 1}/$total',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _hearts(size: 14, color: const Color(0xFFB86B53)),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(3),
+          child: LinearProgressIndicator(
+            value: (index + 1) / total,
+            minHeight: 4,
+            backgroundColor: AppColors.line,
+            valueColor: const AlwaysStoppedAnimation(AppColors.learnDeep),
+          ),
         ),
       ],
     );
@@ -926,7 +1168,6 @@ class _Feedback extends StatelessWidget {
   final int multiplier;
   final int triesLeft;
   final int attempts;
-  final bool timedOut;
 
   const _Feedback({
     required this.settled,
@@ -935,7 +1176,6 @@ class _Feedback extends StatelessWidget {
     required this.multiplier,
     required this.triesLeft,
     required this.attempts,
-    required this.timedOut,
   });
 
   @override
@@ -954,51 +1194,63 @@ class _Feedback extends StatelessWidget {
 
     final good = settled && gotIt;
     final retrying = !settled;
-    final tone = good
-        ? AppColors.play
-        : retrying
-            ? AppColors.sunshine
-            : AppColors.practice;
     final label = good
         ? '+$award points${multiplier > 1 ? '  ($multiplier x streak)' : ''}'
         : retrying
-            ? 'Not that one — $triesLeft ${triesLeft == 1 ? 'try' : 'tries'} left'
-            : timedOut
-                ? 'Out of time — one heart lost'
-                : 'Out of tries — one heart lost';
+        ? 'Not that one — $triesLeft ${triesLeft == 1 ? 'try' : 'tries'} left'
+        : 'Out of tries — one heart lost';
 
-    return Container(
-      height: 44,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: tone.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 14.5,
-          fontWeight: FontWeight.w700,
-          color: good ? AppColors.playDeep : tone,
-        ),
+    final feedbackColor = good ? AppColors.playDeep : const Color(0xFFAD533B);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(
+            good ? Icons.check_circle_outline_rounded : Icons.info_outline,
+            size: 18,
+            color: feedbackColor,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: feedbackColor,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _Option extends StatelessWidget {
+  final String prefix;
+  final int index;
+  final bool selected;
   final String text;
   final bool wrong;
   final bool correct;
   final bool settled;
   final VoidCallback onTap;
+  final Widget? content;
+  final Widget audioMenu;
 
   const _Option({
+    super.key,
+    required this.prefix,
+    required this.index,
+    required this.selected,
     required this.text,
     required this.wrong,
     required this.correct,
     required this.settled,
     required this.onTap,
+    this.content,
+    required this.audioMenu,
   });
 
   @override
@@ -1007,41 +1259,65 @@ class _Option extends StatelessWidget {
     // only lights up once the question is settled.
     final showRight = settled && correct;
     final highlight = showRight || wrong;
-    final tone = showRight ? AppColors.play : AppColors.practice;
+    final tone = showRight
+        ? AppColors.playDeep
+        : wrong
+        ? const Color(0xFFB65D43)
+        : AppColors.learnDeep;
 
     return Bouncy(
-      onTap: settled || wrong ? () {} : onTap,
+      onTap: settled || wrong ? null : onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: highlight ? tone.withValues(alpha: 0.14) : AppColors.surface,
-          borderRadius: BorderRadius.circular(18),
+          color: highlight || selected
+              ? tone.withValues(alpha: 0.05)
+              : AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: highlight ? tone : AppColors.line,
-            width: highlight ? 2 : 1,
+            color: highlight || selected ? tone : AppColors.line,
+            width: highlight || selected ? 1.4 : 1,
           ),
         ),
         child: Row(
           children: [
+            Semantics(
+              label: text,
+              child: Radio<int>(
+                key: ValueKey('$prefix-option-$index-select'),
+                value: index,
+                enabled: !settled && !wrong,
+                visualDensity: VisualDensity.compact,
+                fillColor: WidgetStateProperty.resolveWith((states) {
+                  if (highlight) return tone;
+                  return states.contains(WidgetState.selected)
+                      ? AppColors.learnDeep
+                      : AppColors.inkSoft;
+                }),
+              ),
+            ),
+            const SizedBox(width: 4),
             Expanded(
-              child: Text(
-                text,
+              child: DefaultTextStyle.merge(
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: highlight ? FontWeight.w700 : FontWeight.w500,
-                  color: highlight ? tone : AppColors.ink,
+                  fontWeight: highlight || selected
+                      ? FontWeight.w600
+                      : FontWeight.w400,
+                  color: AppColors.ink,
                 ),
+                child: content ?? Text(text),
               ),
             ),
             if (highlight)
               Icon(
-                showRight
-                    ? Icons.check_circle_rounded
-                    : Icons.cancel_rounded,
-                size: 20,
+                showRight ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                size: 18,
                 color: tone,
               ),
+            const SizedBox(width: 4),
+            audioMenu,
           ],
         ),
       ),
@@ -1076,8 +1352,8 @@ class _Result extends StatelessWidget {
     final headline = !survived
         ? 'Out of hearts'
         : perfect
-            ? 'Every one right'
-            : 'Round complete';
+        ? 'Every one right'
+        : 'Round complete';
     return Column(
       children: [
         Container(
@@ -1100,8 +1376,8 @@ class _Result extends StatelessWidget {
                 perfect
                     ? Icons.emoji_events_rounded
                     : survived
-                        ? Icons.flag_rounded
-                        : Icons.heart_broken_rounded,
+                    ? Icons.flag_rounded
+                    : Icons.heart_broken_rounded,
                 size: 44,
                 color: Colors.white,
               ),
@@ -1171,11 +1447,7 @@ class _Tally extends StatelessWidget {
   final String label;
   final String value;
 
-  const _Tally({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
+  const _Tally({required this.icon, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {

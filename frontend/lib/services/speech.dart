@@ -17,9 +17,13 @@ class TermSpeaker {
 
   final _tts = FlutterTts();
   List<Map<String, String>>? _voices;
+  Future<void>? _pending;
+  int _request = 0;
 
-  Future<void> speak(String text, {required bool spanish}) async {
-    try {
+  Future<void> speak(String text, {required bool spanish}) {
+    final request = ++_request;
+    return _enqueue(() async {
+      if (request != _request) return;
       await _tts.stop();
       if (spanish) {
         await _configureSpanishVoice();
@@ -31,12 +35,32 @@ class TermSpeaker {
         kIsWeb ? (spanish ? _webSpanishRate : _webEnglishRate) : _nativeRate,
       );
       await _tts.setPitch(1.0);
+      if (request != _request) return;
       await _tts.speak(text);
-    } on PlatformException catch (error, stackTrace) {
-      _reportFailure(error, stackTrace);
-    } on MissingPluginException catch (error, stackTrace) {
-      _reportFailure(error, stackTrace);
-    }
+    });
+  }
+
+  Future<void> stop() {
+    _request++;
+    return _enqueue(() async {
+      await _tts.stop();
+    });
+  }
+
+  Future<void> _enqueue(Future<void> Function() action) {
+    final pending = (_pending ?? Future<void>.value()).then((_) async {
+      try {
+        await action();
+      } on PlatformException catch (error, stackTrace) {
+        _reportFailure(error, stackTrace);
+      } on MissingPluginException catch (error, stackTrace) {
+        _reportFailure(error, stackTrace);
+      }
+    });
+    _pending = pending;
+    return pending.whenComplete(() {
+      if (identical(_pending, pending)) _pending = null;
+    });
   }
 
   Future<void> _configureSpanishVoice() async {

@@ -11,43 +11,35 @@ import '../widgets/fun_card.dart';
 import '../widgets/section_hero.dart';
 import 'quiz_screen.dart';
 
-/// Colour and icon per lesson, so a quiz card matches the lesson it came from.
-const _quizStyles = <String, (IconData, Color)>{
-  'motion': (Icons.directions_run_rounded, AppColors.practice),
-  'forces': (Icons.back_hand_rounded, AppColors.sky),
-  'gravity': (Icons.public_rounded, AppColors.grape),
-  'machines': (Icons.settings_rounded, AppColors.learn),
-};
-
-/// Each game mode gathers one question type from every lesson.
+/// Each activity opens per-lesson practice for one question type.
 const _modes = <(QuestionKind, String, String, IconData, Color)>[
   (
     QuestionKind.mcq,
     'Multiple Choice',
-    'Pick the right answer',
+    'Choose a topic and answer',
     Icons.checklist_rounded,
-    AppColors.learn
+    AppColors.learn,
   ),
   (
     QuestionKind.blank,
     'Fill the Blank',
     'Complete the sentence',
     Icons.edit_note_rounded,
-    AppColors.play
+    AppColors.play,
   ),
   (
     QuestionKind.oddOneOut,
     'Odd One Out',
     'Spot what does not belong',
     Icons.search_off_rounded,
-    AppColors.grape
+    AppColors.grape,
   ),
   (
     QuestionKind.match,
     'Match Up',
     'Pair each word to its meaning',
     Icons.compare_arrows_rounded,
-    AppColors.sunshine
+    AppColors.sunshine,
   ),
 ];
 
@@ -67,7 +59,13 @@ class _PracticeViewState extends State<PracticeView> {
     _lessons = lessonRepository.fetchAll();
   }
 
-  void _open(String quizId, String title, Color color, List<Question> qs) {
+  void _open(
+    String quizId,
+    String title,
+    Color color,
+    List<Question> qs, {
+    List<GlossaryTerm> glossary = const [],
+  }) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
@@ -75,6 +73,7 @@ class _PracticeViewState extends State<PracticeView> {
           title: title,
           color: color,
           questions: qs,
+          glossary: glossary,
         ),
       ),
     );
@@ -118,11 +117,10 @@ class _PracticeViewState extends State<PracticeView> {
                   'Daily Challenge',
                   AppColors.sunshine,
                   _mixed(lessons, math.min(5, all.length)),
+                  glossary: [for (final lesson in lessons) ...lesson.glossary],
                 ),
               ),
               const SizedBox(height: 22),
-              const _Heading('Game modes'),
-              const SizedBox(height: 12),
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
@@ -137,7 +135,7 @@ class _PracticeViewState extends State<PracticeView> {
                         final items = [
                           for (final lesson in lessons)
                             ...lesson.questions.where((q) => q.kind == mode.$1),
-                        ]..shuffle(math.Random());
+                        ];
                         return _ModeCard(
                           title: mode.$2,
                           blurb: mode.$3,
@@ -146,61 +144,100 @@ class _PracticeViewState extends State<PracticeView> {
                           count: items.length,
                           onTap: items.isEmpty
                               ? null
-                              : () => _open(
-                                    mode.$1.name,
-                                    mode.$2,
-                                    mode.$5,
-                                    items,
-                                  ),
+                              : () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => _PracticeTopicsView(
+                                        lessons: lessons,
+                                        kind: mode.$1,
+                                        icon: mode.$4,
+                                      ),
+                                    ),
+                                  );
+                                },
                         );
                       },
                     ),
                 ],
               ),
-              const SizedBox(height: 22),
-              const _Heading('Practice a lesson'),
-              const SizedBox(height: 12),
-              for (final lesson in lessons) ...[
-                Builder(
-                  builder: (context) {
-                    final style = _quizStyles[lesson.id] ??
-                        (Icons.quiz_rounded, AppColors.practice);
-                    return FunCard(
-                      icon: Icon(style.$1, size: 28, color: style.$2),
-                      title: lesson.title,
-                      meta: '${lesson.questions.length} questions',
-                      color: style.$2,
-                      onTap: lesson.questions.isEmpty
-                          ? null
-                          : () => _open(
-                                lesson.id,
-                                lesson.title,
-                                style.$2,
-                                lesson.questions,
-                              ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-              ],
-              FunCard(
-                icon: const Icon(Icons.emoji_events_rounded,
-                    size: 28, color: AppColors.sunshine),
-                title: 'Mixed Challenge',
-                meta: 'All ${all.length} questions',
-                color: AppColors.sunshine,
-                onTap: all.isEmpty
-                    ? null
-                    : () => _open(
-                          'mixed',
-                          'Mixed Challenge',
-                          AppColors.sunshine,
-                          _mixed(lessons, all.length),
-                        ),
-              ),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _PracticeTopicsView extends StatelessWidget {
+  final List<Lesson> lessons;
+  final QuestionKind kind;
+  final IconData icon;
+
+  const _PracticeTopicsView({
+    required this.lessons,
+    required this.kind,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.lessonBackground,
+      appBar: const BackBar(),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(18, 0, 18, 32),
+        children: [
+          SectionHero(
+            icon: icon,
+            title: kind.title,
+            subtitle: kind == QuestionKind.mcq
+                ? 'Choose a lesson to practice its MCQs.'
+                : 'Choose a lesson to start.',
+            color: AppColors.learn,
+            colorDeep: AppColors.learnDeep,
+          ),
+          const SizedBox(height: 18),
+          for (final lesson in lessons) ...[
+            Builder(
+              builder: (context) {
+                final questions = lesson.questions
+                    .where((question) => question.kind == kind)
+                    .toList();
+                return FunCard(
+                  key: ValueKey('${kind.name}-topic-${lesson.id}'),
+                  icon: const Icon(
+                    Icons.quiz_rounded,
+                    size: 28,
+                    color: AppColors.learn,
+                  ),
+                  title: lesson.title,
+                  meta:
+                      '${questions.length} ${switch (kind) {
+                        QuestionKind.mcq => 'MCQs',
+                        QuestionKind.match => 'matching sets',
+                        _ => 'questions',
+                      }}',
+                  color: AppColors.learn,
+                  locked: questions.isEmpty,
+                  onTap: questions.isEmpty
+                      ? null
+                      : () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => QuizScreen(
+                              quizId: '${kind.name}-${lesson.id}',
+                              title: lesson.title,
+                              color: AppColors.learn,
+                              questions: questions,
+                              glossary: lesson.glossary,
+                            ),
+                          ),
+                        ),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+          ],
+        ],
       ),
     );
   }
@@ -272,8 +309,7 @@ class _ModeCard extends StatelessWidget {
                     blurb,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:
-                        const TextStyle(color: Colors.white70, fontSize: 11),
+                    style: const TextStyle(color: Colors.white70, fontSize: 11),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -321,8 +357,11 @@ class _DailyChallenge extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Icon(Icons.bolt_rounded,
-                  size: 30, color: Colors.white),
+              child: const Icon(
+                Icons.bolt_rounded,
+                size: 30,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(width: 14),
             const Expanded(
@@ -362,21 +401,6 @@ class _DailyChallenge extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _Heading extends StatelessWidget {
-  final String text;
-  const _Heading(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
     );
   }
 }

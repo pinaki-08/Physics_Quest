@@ -79,3 +79,25 @@ String keyPointsNarration(List<String> points, {required bool spanish}) {
       .join(' ');
   return '$heading $narration';
 }
+
+String scienceTextNarration(String text, {required bool spanish}) {
+  return text
+      .replaceAll('___', spanish ? 'espacio en blanco' : 'blank')
+      .replaceAll('÷', spanish ? 'dividido entre' : 'divided by')
+      .replaceAll('×', spanish ? 'por' : 'times')
+      .replaceAll(
+        RegExp(r'\bN\s*(?:/|per|por)\s*kg\b'),
+        spanish ? 'newtons por kilogramo' : 'newtons per kilogram',
+      )
+      .replaceAll(
+        RegExp(r'\bm/s\b'),
+        spanish ? 'metros por segundo' : 'metres per second',
+      )
+      .replaceAll(RegExp(r'\bkg\b'), spanish ? 'kilogramos' : 'kilograms')
+      .replaceAll(RegExp(r'\bN\b'), 'newtons')
+      .replaceAll('=', spanish ? 'es igual a' : 'equals')
+      .replaceAllMapped(
+        RegExp(r'(\d)[.,](\d+)'),
+        (match) => '${match[1]} ${spanish ? 'punto' : 'point'} ${match[2]}',
+      );
+}

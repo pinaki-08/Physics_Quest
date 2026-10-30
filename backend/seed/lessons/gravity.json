@@ -95,99 +95,1032 @@
     {
       "id": "q1",
       "prompt": "Which of these never changes when you travel to the Moon?",
+      "promptEs": "¿Cuál de estas propiedades no cambia por viajar a la Luna?",
       "options": [
         "Your mass",
         "Your weight",
         "The gravity",
         "Your size in newtons"
       ],
+      "optionsEs": [
+        "Tu masa",
+        "Tu peso",
+        "La gravedad",
+        "Tu tamaño en newtons"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Mass is the amount of matter in you and it never changes. Weight is the pull of gravity, so it drops on the Moon."
+      "explanation": "Moving to the Moon does not change the amount of matter in you. Your weight decreases because gravity is weaker there.",
+      "explanationEs": "Viajar a la Luna no cambia la cantidad de materia que contienes. Tu peso disminuye porque allí la gravedad es menor."
     },
     {
       "id": "q2",
       "prompt": "Weight is measured in...",
+      "promptEs": "El peso se mide en...",
       "options": [
         "Newtons",
         "Kilograms",
         "Metres",
         "Seconds"
       ],
+      "optionsEs": [
+        "Newtons",
+        "Kilogramos",
+        "Metros",
+        "Segundos"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Weight is a force, and forces are measured in newtons. Kilograms measure mass instead."
+      "explanation": "Weight is a force, and forces are measured in newtons. Kilograms measure mass instead.",
+      "explanationEs": "El peso es una fuerza y las fuerzas se miden en newtons. Los kilogramos miden la masa."
     },
     {
       "id": "q3",
       "prompt": "On the Moon a hammer and a feather are dropped together. They...",
+      "promptEs": "En la Luna se dejan caer juntos un martillo y una pluma. Ambos...",
       "options": [
         "Land at the same time",
         "The hammer lands first",
         "The feather lands first",
         "Neither one falls"
       ],
+      "optionsEs": [
+        "Llegan al suelo al mismo tiempo",
+        "El martillo llega primero",
+        "La pluma llega primero",
+        "Ninguno cae"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "The Moon has no air, so nothing slows the feather down. With only gravity acting, everything falls together."
+      "explanation": "The Moon has no air, so nothing slows the feather down. With only gravity acting, everything falls together.",
+      "explanationEs": "En la Luna no hay aire que frene la pluma. Si solo actúa la gravedad, ambos caen juntos."
     },
     {
       "id": "q4",
-      "kind": "blank",
       "prompt": "Your mass stays the same, but your ___ changes on another planet.",
+      "promptEs": "Tu masa permanece igual, pero tu ___ cambia en otro planeta.",
       "options": [
         "weight",
         "height",
         "age",
         "volume"
       ],
+      "optionsEs": [
+        "peso",
+        "altura",
+        "edad",
+        "volumen"
+      ],
       "answer": 0,
       "points": 10,
-      "explanation": "Your mass is the same everywhere, but weight depends on the strength of gravity where you are standing."
+      "kind": "blank",
+      "explanation": "Your mass is the same everywhere, but weight depends on the strength of gravity where you are standing.",
+      "explanationEs": "La masa no cambia solo por cambiar de lugar; el peso depende de la gravedad local."
     },
     {
       "id": "q5",
-      "kind": "oddOneOut",
       "prompt": "Three of these are measured in newtons. Which one is not?",
+      "promptEs": "Tres de estas se miden en newtons. ¿Cuál no?",
       "options": [
         "Mass",
         "Weight",
         "Air resistance",
         "Friction"
       ],
+      "optionsEs": [
+        "Masa",
+        "Peso",
+        "Resistencia del aire",
+        "Fricción"
+      ],
       "answer": 0,
       "points": 10,
-      "explanation": "Weight, air resistance and friction are all forces, so all are measured in newtons. Mass is measured in kilograms."
+      "kind": "oddOneOut",
+      "explanation": "Weight, air resistance and friction are all forces, so all are measured in newtons. Mass is measured in kilograms.",
+      "explanationEs": "Peso, resistencia del aire y fricción son fuerzas. La masa se mide en kilogramos."
     },
     {
       "id": "q6",
-      "kind": "match",
       "prompt": "Match each quantity to its unit or meaning.",
-      "points": 20,
+      "promptEs": "Relaciona cada magnitud con su unidad o significado.",
       "options": [],
       "answer": 0,
+      "points": 20,
+      "kind": "match",
       "pairs": [
         {
           "left": "Mass",
-          "right": "Kilograms"
+          "right": "Kilograms",
+          "leftEs": "Masa",
+          "rightEs": "Kilogramos"
         },
         {
           "left": "Weight",
-          "right": "Newtons"
+          "right": "Newtons",
+          "leftEs": "Peso",
+          "rightEs": "Newtons"
         },
         {
           "left": "Gravity on Earth",
-          "right": "About 10 N per kg"
+          "right": "About 10 N per kg",
+          "leftEs": "Gravedad en la Tierra",
+          "rightEs": "Aproximadamente 10 N/kg"
         },
         {
           "left": "Free fall",
-          "right": "Only gravity acting"
+          "right": "Only gravity acting",
+          "leftEs": "Caída libre",
+          "rightEs": "Solo actúa la gravedad"
         }
       ],
-      "explanation": "Mass and weight sound alike but use different units, and free fall means gravity is the only force acting."
+      "explanation": "Mass and weight sound alike but use different units, and free fall means gravity is the only force acting.",
+      "explanationEs": "Masa y peso tienen unidades distintas; en caída libre solo actúa la gravedad."
+    },
+    {
+      "id": "q7",
+      "prompt": "Which statement describes gravity between any two objects with mass?",
+      "promptEs": "¿Qué afirmación describe la gravedad entre dos objetos con masa?",
+      "options": [
+        "Only one object pulls on the other",
+        "The objects always push each other apart",
+        "Only planets can exert gravity",
+        "The objects attract each other"
+      ],
+      "optionsEs": [
+        "Solo un objeto atrae al otro",
+        "Los objetos siempre se empujan para separarse",
+        "Solo los planetas pueden ejercer gravedad",
+        "Los objetos se atraen entre sí"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Gravity is an attractive interaction between masses. Both objects pull on each other, although the force may be very small.",
+      "explanationEs": "La gravedad es una interacción de atracción entre masas. Ambos objetos se atraen, aunque la fuerza puede ser muy pequeña."
+    },
+    {
+      "id": "q8",
+      "prompt": "Two objects stay the same distance apart. If one object's mass increases, what happens to their gravitational attraction?",
+      "promptEs": "Dos objetos permanecen a la misma distancia. Si aumenta la masa de uno, ¿qué pasa con su atracción gravitatoria?",
+      "options": [
+        "It becomes stronger",
+        "It disappears",
+        "It becomes weaker",
+        "It always stays the same"
+      ],
+      "optionsEs": [
+        "Se hace más fuerte",
+        "Desaparece",
+        "Se hace más débil",
+        "Siempre permanece igual"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "At the same separation, increasing either mass increases the gravitational attraction between the objects.",
+      "explanationEs": "A la misma distancia, aumentar cualquiera de las masas aumenta la atracción gravitatoria entre los objetos."
+    },
+    {
+      "id": "q9",
+      "prompt": "Which measurement describes mass rather than weight?",
+      "promptEs": "¿Qué medición describe la masa en lugar del peso?",
+      "options": [
+        "40 newtons",
+        "4 kilograms",
+        "4 metres",
+        "40 seconds"
+      ],
+      "optionsEs": [
+        "40 newtons",
+        "4 kilogramos",
+        "4 metros",
+        "40 segundos"
+      ],
+      "answer": 1,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Kilograms measure mass. Newtons measure force, including weight. Metres and seconds measure distance and time.",
+      "explanationEs": "Los kilogramos miden la masa. Los newtons miden fuerzas, incluido el peso. Los metros y segundos miden distancia y tiempo."
+    },
+    {
+      "id": "q10",
+      "prompt": "A backpack has a mass of 3 kg. Gravity pulls with 10 N for each kilogram. What is the backpack's weight?",
+      "promptEs": "Una mochila tiene una masa de 3 kg. La gravedad ejerce 10 N por cada kilogramo. ¿Cuál es el peso de la mochila?",
+      "options": [
+        "3 N",
+        "10 N",
+        "30 N",
+        "300 N"
+      ],
+      "optionsEs": [
+        "3 N",
+        "10 N",
+        "30 N",
+        "300 N"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Weight is mass multiplied by gravitational field strength: 3 kilograms times 10 newtons per kilogram = 30 newtons.",
+      "explanationEs": "El peso es la masa multiplicada por la intensidad del campo gravitatorio: 3 kilogramos por 10 newtons por kilogramo = 30 newtons."
+    },
+    {
+      "id": "q11",
+      "prompt": "The same object moves from a planet with gravity of 10 N/kg to one with 5 N/kg. How does its weight change?",
+      "promptEs": "El mismo objeto pasa de un planeta con gravedad de 10 N/kg a otro con 5 N/kg. ¿Cómo cambia su peso?",
+      "options": [
+        "Its weight doubles",
+        "Its mass is cut in half",
+        "Its weight stays the same",
+        "Its weight becomes half as large"
+      ],
+      "optionsEs": [
+        "Su peso se duplica",
+        "Su masa se reduce a la mitad",
+        "Su peso permanece igual",
+        "Su peso se reduce a la mitad"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "The mass stays the same, but the gravitational field strength is halved. Since weight is mass times field strength, weight is halved.",
+      "explanationEs": "La masa permanece igual, pero la intensidad del campo gravitatorio se reduce a la mitad. Como el peso es masa por intensidad del campo, el peso también se reduce a la mitad."
+    },
+    {
+      "id": "q12",
+      "prompt": "Astronauts orbit Earth above the atmosphere. Which statement about Earth's gravity is correct?",
+      "promptEs": "Unos astronautas orbitan la Tierra por encima de la atmósfera. ¿Qué afirmación sobre la gravedad terrestre es correcta?",
+      "options": [
+        "It still pulls on the astronauts",
+        "It stops at the top of the atmosphere",
+        "Spacesuits block it completely",
+        "It acts only on objects that are at rest"
+      ],
+      "optionsEs": [
+        "Todavía atrae a los astronautas",
+        "Termina en el límite de la atmósfera",
+        "Los trajes espaciales la bloquean por completo",
+        "Solo actúa sobre objetos en reposo"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Gravity acts without contact and extends beyond the atmosphere. Earth still pulls on astronauts and their spacecraft in orbit.",
+      "explanationEs": "La gravedad actúa sin contacto y se extiende más allá de la atmósfera. La Tierra sigue atrayendo a los astronautas y a su nave en órbita."
+    },
+    {
+      "id": "q13",
+      "prompt": "A ball is thrown straight upward. After it leaves the hand, which way does Earth's gravity pull while the ball is rising?",
+      "promptEs": "Una pelota se lanza verticalmente hacia arriba. Después de salir de la mano, ¿hacia dónde la atrae la gravedad mientras sube?",
+      "options": [
+        "Upward",
+        "Sideways",
+        "Downward",
+        "Nowhere until the ball starts falling"
+      ],
+      "optionsEs": [
+        "Hacia arriba",
+        "Hacia un lado",
+        "Hacia abajo",
+        "Hacia ningún lado hasta que empiece a caer"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Near Earth, gravity pulls toward Earth's centre even while an object moves upward. This downward force slows the rising ball.",
+      "explanationEs": "Cerca de la Tierra, la gravedad atrae hacia su centro incluso cuando el objeto sube. Esta fuerza hacia abajo frena la pelota mientras asciende."
+    },
+    {
+      "id": "blank-2",
+      "prompt": "The amount of matter in an object is its ___.",
+      "promptEs": "La cantidad de materia de un objeto es su ___.",
+      "options": [
+        "mass",
+        "weight",
+        "speed",
+        "temperature"
+      ],
+      "optionsEs": [
+        "masa",
+        "peso",
+        "velocidad",
+        "temperatura"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Mass describes the amount of matter, not the gravitational force on it.",
+      "explanationEs": "La masa describe la cantidad de materia, no la fuerza gravitatoria que actúa sobre ella."
+    },
+    {
+      "id": "blank-3",
+      "prompt": "The gravitational force on an object is its ___.",
+      "promptEs": "La fuerza gravitatoria sobre un objeto es su ___.",
+      "options": [
+        "weight",
+        "mass",
+        "volume",
+        "time"
+      ],
+      "optionsEs": [
+        "peso",
+        "masa",
+        "volumen",
+        "tiempo"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Weight is a force and is measured in newtons.",
+      "explanationEs": "El peso es una fuerza y se mide en newtons."
+    },
+    {
+      "id": "blank-4",
+      "prompt": "Mass is measured in ___.",
+      "promptEs": "La masa se mide en ___.",
+      "options": [
+        "kilograms",
+        "newtons",
+        "seconds",
+        "metres"
+      ],
+      "optionsEs": [
+        "kilogramos",
+        "newtons",
+        "segundos",
+        "metros"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Kilograms measure mass; newtons measure force, including weight.",
+      "explanationEs": "Los kilogramos miden masa; los newtons miden fuerzas, incluido el peso."
+    },
+    {
+      "id": "blank-5",
+      "prompt": "At 10 N/kg, the weight of a 4 kg object is ___ N.",
+      "promptEs": "Con una gravedad de 10 N/kg, un objeto de 4 kg pesa ___ N.",
+      "options": [
+        "40",
+        "4",
+        "10",
+        "400"
+      ],
+      "optionsEs": [
+        "40",
+        "4",
+        "10",
+        "400"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Multiply mass by field strength: 4 times 10 = 40 N.",
+      "explanationEs": "Multiplica la masa por la intensidad del campo: 4 por 10 = 40 N."
+    },
+    {
+      "id": "blank-6",
+      "prompt": "Moving the same backpack to the Moon changes its weight, not its ___.",
+      "promptEs": "Llevar la misma mochila a la Luna cambia su peso, no su ___.",
+      "options": [
+        "mass",
+        "location",
+        "surroundings",
+        "gravitational field"
+      ],
+      "optionsEs": [
+        "masa",
+        "ubicación",
+        "entorno",
+        "campo gravitatorio"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Changing location alone does not change the matter in the backpack.",
+      "explanationEs": "Cambiar solo de lugar no cambia la materia que contiene la mochila."
+    },
+    {
+      "id": "blank-7",
+      "prompt": "Without air resistance, objects dropped together from the same height land at the ___ time.",
+      "promptEs": "Sin resistencia del aire, los objetos soltados juntos desde la misma altura llegan al suelo al ___ tiempo.",
+      "options": [
+        "same",
+        "heavier",
+        "longest",
+        "opposite"
+      ],
+      "optionsEs": [
+        "mismo",
+        "más pesado",
+        "más largo",
+        "opuesto"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Near Earth, objects in ideal free fall have the same acceleration regardless of mass.",
+      "explanationEs": "Cerca de la Tierra, los objetos en caída libre ideal tienen la misma aceleración sin importar su masa."
+    },
+    {
+      "id": "blank-8",
+      "prompt": "Complete the present-tense sentence: Gravity ___ objects toward one another.",
+      "promptEs": "Completa en presente: La gravedad ___ los objetos unos hacia otros.",
+      "options": [
+        "pulls",
+        "pull",
+        "pulling",
+        "are pulling"
+      ],
+      "optionsEs": [
+        "atrae",
+        "atraen",
+        "atrayendo",
+        "están atrayendo"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Gravity is singular, so the present-tense verb takes s: gravity pulls.",
+      "explanationEs": "Gravity es singular; en presente se añade s al verbo: gravity pulls."
+    },
+    {
+      "id": "blank-9",
+      "prompt": "While a thrown ball rises, gravity still pulls ___.",
+      "promptEs": "Mientras una pelota lanzada sube, la gravedad sigue atrayéndola ___.",
+      "options": [
+        "downward",
+        "upward",
+        "sideways",
+        "nowhere"
+      ],
+      "optionsEs": [
+        "hacia abajo",
+        "hacia arriba",
+        "hacia un lado",
+        "hacia ningún lado"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Gravity near Earth points toward Earth's centre even while a ball rises.",
+      "explanationEs": "La gravedad cerca de la Tierra apunta hacia su centro incluso cuando la pelota sube."
+    },
+    {
+      "id": "blank-10",
+      "prompt": "At the same separation, increasing one mass makes gravitational attraction ___.",
+      "promptEs": "A la misma distancia, aumentar una masa hace que la atracción gravitatoria sea ___.",
+      "options": [
+        "stronger",
+        "weaker",
+        "zero",
+        "repulsive"
+      ],
+      "optionsEs": [
+        "más fuerte",
+        "más débil",
+        "nula",
+        "repulsiva"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "The gravitational interaction grows stronger when a mass increases at fixed separation.",
+      "explanationEs": "La interacción gravitatoria aumenta al crecer una masa sin cambiar la distancia."
+    },
+    {
+      "id": "odd-2",
+      "prompt": "Which is NOT a mass unit?",
+      "promptEs": "¿Cuál NO es una unidad de masa?",
+      "options": [
+        "kilogram",
+        "gram",
+        "milligram",
+        "newton"
+      ],
+      "optionsEs": [
+        "kilogramo",
+        "gramo",
+        "miligramo",
+        "newton"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "A newton measures force rather than mass.",
+      "explanationEs": "Un newton mide fuerza, no masa."
+    },
+    {
+      "id": "odd-3",
+      "prompt": "Which is NOT an example of gravitational attraction?",
+      "promptEs": "¿Cuál NO es un ejemplo de atracción gravitatoria?",
+      "options": [
+        "an apple falling",
+        "the Moon orbiting Earth",
+        "Earth orbiting the Sun",
+        "like magnetic poles repelling"
+      ],
+      "optionsEs": [
+        "una manzana que cae",
+        "la Luna orbitando la Tierra",
+        "la Tierra orbitando el Sol",
+        "polos magnéticos iguales que se repelen"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Magnetic repulsion is a different interaction; gravity between masses is attractive.",
+      "explanationEs": "La repulsión magnética es otra interacción; la gravedad entre masas es atractiva."
+    },
+    {
+      "id": "odd-4",
+      "prompt": "Which phrase does NOT describe weight?",
+      "promptEs": "¿Qué frase NO describe el peso?",
+      "options": [
+        "a force",
+        "measured in newtons",
+        "depends on gravity",
+        "the amount of matter"
+      ],
+      "optionsEs": [
+        "una fuerza",
+        "se mide en newtons",
+        "depende de la gravedad",
+        "la cantidad de materia"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "The amount of matter describes mass, not weight.",
+      "explanationEs": "La cantidad de materia describe la masa, no el peso."
+    },
+    {
+      "id": "odd-5",
+      "prompt": "Which statement does NOT describe ideal free fall?",
+      "promptEs": "¿Qué afirmación NO describe la caída libre ideal?",
+      "options": [
+        "only gravity acts",
+        "air resistance can be neglected",
+        "speed can change",
+        "air drag balances weight"
+      ],
+      "optionsEs": [
+        "solo actúa la gravedad",
+        "se puede despreciar la resistencia del aire",
+        "la velocidad puede cambiar",
+        "la resistencia del aire equilibra el peso"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "If air drag balances weight, another force is acting, so the motion is not ideal free fall.",
+      "explanationEs": "Si el aire equilibra el peso, actúa otra fuerza y no es una caída libre ideal."
+    },
+    {
+      "id": "odd-6",
+      "prompt": "Which action does NOT leave an object's mass unchanged?",
+      "promptEs": "¿Qué acción NO deja igual la masa de un objeto?",
+      "options": [
+        "moving it to the Moon",
+        "moving it to Mars",
+        "moving it across a classroom",
+        "removing half its contents"
+      ],
+      "optionsEs": [
+        "llevarlo a la Luna",
+        "llevarlo a Marte",
+        "moverlo por el salón",
+        "quitar la mitad de su contenido"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Removing contents removes matter and changes mass; moving location alone does not.",
+      "explanationEs": "Quitar contenido elimina materia y cambia la masa; cambiar solo de lugar no lo hace."
+    },
+    {
+      "id": "odd-7",
+      "prompt": "Using 10 N/kg, which mass-weight pair is NOT correct?",
+      "promptEs": "Usando 10 N/kg, ¿qué pareja de masa y peso NO es correcta?",
+      "options": [
+        "1 kg and 10 N",
+        "2 kg and 20 N",
+        "3 kg and 30 N",
+        "4 kg and 4 N"
+      ],
+      "optionsEs": [
+        "1 kg y 10 N",
+        "2 kg y 20 N",
+        "3 kg y 30 N",
+        "4 kg y 4 N"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "At 10 N/kg, an object of 4 kg weighs 40 N, not 4 N.",
+      "explanationEs": "Con 10 N/kg, un objeto de 4 kg pesa 40 N, no 4 N."
+    },
+    {
+      "id": "odd-8",
+      "prompt": "Which phrase does NOT mean attraction?",
+      "promptEs": "¿Qué frase NO significa atracción?",
+      "options": [
+        "pulling together",
+        "pulling toward",
+        "pulling inward",
+        "pushing apart"
+      ],
+      "optionsEs": [
+        "atraer para juntar",
+        "atraer hacia",
+        "atraer hacia dentro",
+        "empujar para separar"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Pushing apart describes repulsion, the opposite of attraction.",
+      "explanationEs": "Empujar para separar describe repulsión, lo contrario de atracción."
+    },
+    {
+      "id": "odd-9",
+      "prompt": "Which is NOT a tool for measuring mass or weight?",
+      "promptEs": "¿Cuál NO es un instrumento para medir masa o peso?",
+      "options": [
+        "a balance",
+        "a spring scale",
+        "a calibrated digital mass scale",
+        "a stopwatch"
+      ],
+      "optionsEs": [
+        "una balanza",
+        "un dinamómetro",
+        "una báscula digital calibrada",
+        "un cronómetro"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "A stopwatch measures elapsed time.",
+      "explanationEs": "Un cronómetro mide el tiempo transcurrido."
+    },
+    {
+      "id": "odd-10",
+      "prompt": "Without air, which statement about objects dropped together from the same height is NOT correct?",
+      "promptEs": "Sin aire, ¿qué afirmación sobre objetos soltados juntos desde la misma altura NO es correcta?",
+      "options": [
+        "gravity acts on them",
+        "heavy and light objects land together",
+        "their free-fall acceleration is the same",
+        "the heavier object always lands first"
+      ],
+      "optionsEs": [
+        "la gravedad actúa sobre ellos",
+        "los objetos pesados y ligeros llegan juntos",
+        "tienen la misma aceleración de caída libre",
+        "el objeto más pesado siempre llega primero"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "In ideal free fall at the same place, mass does not make one object accelerate faster.",
+      "explanationEs": "En caída libre ideal en el mismo lugar, una masa mayor no produce más aceleración."
+    },
+    {
+      "id": "match-2",
+      "prompt": "Match gravity measurements to their units.",
+      "promptEs": "Relaciona las mediciones de gravedad con sus unidades.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Mass",
+          "right": "Kilograms",
+          "leftEs": "Masa",
+          "rightEs": "Kilogramos"
+        },
+        {
+          "left": "Weight",
+          "right": "Newtons",
+          "leftEs": "Peso",
+          "rightEs": "Newtons"
+        },
+        {
+          "left": "Gravitational field strength",
+          "right": "Newtons per kilogram",
+          "leftEs": "Intensidad del campo gravitatorio",
+          "rightEs": "Newtons por kilogramo"
+        },
+        {
+          "left": "Time",
+          "right": "Seconds",
+          "leftEs": "Tiempo",
+          "rightEs": "Segundos"
+        }
+      ],
+      "explanation": "Mass and weight have different units because weight is a force.",
+      "explanationEs": "Masa y peso tienen unidades distintas porque el peso es una fuerza."
+    },
+    {
+      "id": "match-3",
+      "prompt": "Match gravity vocabulary to clear definitions.",
+      "promptEs": "Relaciona el vocabulario de gravedad con definiciones claras.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Gravitational attraction",
+          "right": "Masses pulling toward one another",
+          "leftEs": "Atracción gravitatoria",
+          "rightEs": "Masas que se atraen entre sí"
+        },
+        {
+          "left": "Air resistance",
+          "right": "Air opposing motion",
+          "leftEs": "Resistencia del aire",
+          "rightEs": "Aire que se opone al movimiento"
+        },
+        {
+          "left": "Mass",
+          "right": "Amount of matter",
+          "leftEs": "Masa",
+          "rightEs": "Cantidad de materia"
+        },
+        {
+          "left": "Weight",
+          "right": "Gravitational force on a mass",
+          "leftEs": "Peso",
+          "rightEs": "Fuerza gravitatoria sobre una masa"
+        }
+      ],
+      "explanation": "Do not confuse an amount of matter with a force acting on that matter.",
+      "explanationEs": "No confundas una cantidad de materia con una fuerza que actúa sobre ella."
+    },
+    {
+      "id": "match-4",
+      "prompt": "Match Earth-and-Moon statements to the correct facts.",
+      "promptEs": "Relaciona las afirmaciones sobre la Tierra y la Luna con los hechos correctos.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "An unchanged object's mass on the Moon",
+          "right": "The same as on Earth",
+          "leftEs": "La masa de un objeto sin modificar en la Luna",
+          "rightEs": "La misma que en la Tierra"
+        },
+        {
+          "left": "An unchanged object's weight on the Moon",
+          "right": "Less than on Earth",
+          "leftEs": "El peso de un objeto sin modificar en la Luna",
+          "rightEs": "Menor que en la Tierra"
+        },
+        {
+          "left": "Gravity's direction near Earth",
+          "right": "Toward Earth's centre",
+          "leftEs": "La dirección de la gravedad cerca de la Tierra",
+          "rightEs": "Hacia el centro de la Tierra"
+        },
+        {
+          "left": "Earth's gravity above the atmosphere",
+          "right": "Still acts",
+          "leftEs": "La gravedad terrestre sobre la atmósfera",
+          "rightEs": "Sigue actuando"
+        }
+      ],
+      "explanation": "Location can change weight without changing an object's matter.",
+      "explanationEs": "El lugar puede cambiar el peso sin cambiar la materia del objeto."
+    },
+    {
+      "id": "match-5",
+      "prompt": "Using 10 N/kg, match each mass to its weight.",
+      "promptEs": "Usando 10 N/kg, relaciona cada masa con su peso.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "2 kg",
+          "right": "20 N",
+          "leftEs": "2 kg",
+          "rightEs": "20 N"
+        },
+        {
+          "left": "3 kg",
+          "right": "30 N",
+          "leftEs": "3 kg",
+          "rightEs": "30 N"
+        },
+        {
+          "left": "4 kg",
+          "right": "40 N",
+          "leftEs": "4 kg",
+          "rightEs": "40 N"
+        },
+        {
+          "left": "5 kg",
+          "right": "50 N",
+          "leftEs": "5 kg",
+          "rightEs": "50 N"
+        }
+      ],
+      "explanation": "Multiply every mass by 10 newtons per kilogram.",
+      "explanationEs": "Multiplica cada masa por 10 newtons por kilogramo."
+    },
+    {
+      "id": "match-6",
+      "prompt": "Match a 4 kg object in each stated gravitational field to its weight.",
+      "promptEs": "Relaciona un objeto de 4 kg en cada campo gravitatorio indicado con su peso.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "4 kg at 2 N/kg",
+          "right": "8 N",
+          "leftEs": "4 kg con 2 N/kg",
+          "rightEs": "8 N"
+        },
+        {
+          "left": "4 kg at 4 N/kg",
+          "right": "16 N",
+          "leftEs": "4 kg con 4 N/kg",
+          "rightEs": "16 N"
+        },
+        {
+          "left": "4 kg at 6 N/kg",
+          "right": "24 N",
+          "leftEs": "4 kg con 6 N/kg",
+          "rightEs": "24 N"
+        },
+        {
+          "left": "4 kg at 8 N/kg",
+          "right": "32 N",
+          "leftEs": "4 kg con 8 N/kg",
+          "rightEs": "32 N"
+        }
+      ],
+      "explanation": "The mass stays 4 kg; multiply it by each different field strength.",
+      "explanationEs": "La masa sigue siendo de 4 kg; multiplícala por cada intensidad de campo."
+    },
+    {
+      "id": "match-7",
+      "prompt": "Match falling-motion terms to their meanings.",
+      "promptEs": "Relaciona los términos de caída con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Vacuum",
+          "right": "A space with no air",
+          "leftEs": "Vacío",
+          "rightEs": "Un espacio sin aire"
+        },
+        {
+          "left": "Free fall",
+          "right": "Motion under gravity alone",
+          "leftEs": "Caída libre",
+          "rightEs": "Movimiento bajo la acción exclusiva de la gravedad"
+        },
+        {
+          "left": "Air resistance",
+          "right": "A force from air against motion",
+          "leftEs": "Resistencia del aire",
+          "rightEs": "Una fuerza del aire contraria al movimiento"
+        },
+        {
+          "left": "Terminal speed",
+          "right": "Constant falling speed when drag balances weight",
+          "leftEs": "Velocidad terminal",
+          "rightEs": "Velocidad de caída constante cuando el aire equilibra el peso"
+        }
+      ],
+      "explanation": "Free fall has no significant air drag; terminal speed involves balanced weight and drag.",
+      "explanationEs": "La caída libre no tiene resistencia del aire significativa; en la velocidad terminal el peso y la resistencia se equilibran."
+    },
+    {
+      "id": "match-8",
+      "prompt": "Match direction and gravity words to their meanings.",
+      "promptEs": "Relaciona las palabras de dirección y gravedad con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Upward",
+          "right": "Away from Earth's centre",
+          "leftEs": "Hacia arriba",
+          "rightEs": "Alejándose del centro de la Tierra"
+        },
+        {
+          "left": "Downward",
+          "right": "Toward Earth's centre",
+          "leftEs": "Hacia abajo",
+          "rightEs": "Hacia el centro de la Tierra"
+        },
+        {
+          "left": "Orbit",
+          "right": "A curved path around a body",
+          "leftEs": "Órbita",
+          "rightEs": "Una trayectoria curva alrededor de un cuerpo"
+        },
+        {
+          "left": "Attraction",
+          "right": "A pull toward another object",
+          "leftEs": "Atracción",
+          "rightEs": "Un tirón hacia otro objeto"
+        }
+      ],
+      "explanation": "These words help describe direction and motion without relying on a picture.",
+      "explanationEs": "Estas palabras permiten describir dirección y movimiento sin depender de un dibujo."
+    },
+    {
+      "id": "match-9",
+      "prompt": "Match measurement tools to their main purpose.",
+      "promptEs": "Relaciona los instrumentos de medición con su función principal.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Balance",
+          "right": "Compares masses",
+          "leftEs": "Balanza",
+          "rightEs": "Compara masas"
+        },
+        {
+          "left": "Spring scale",
+          "right": "Measures force",
+          "leftEs": "Dinamómetro",
+          "rightEs": "Mide fuerza"
+        },
+        {
+          "left": "Metre stick",
+          "right": "Measures length",
+          "leftEs": "Metro de medir",
+          "rightEs": "Mide longitud"
+        },
+        {
+          "left": "Stopwatch",
+          "right": "Measures time",
+          "leftEs": "Cronómetro",
+          "rightEs": "Mide tiempo"
+        }
+      ],
+      "explanation": "Select the instrument for the physical quantity you want to measure.",
+      "explanationEs": "Selecciona el instrumento apropiado para la magnitud que quieres medir."
+    },
+    {
+      "id": "match-10",
+      "prompt": "Match Earth, Moon, mass, and weight to their descriptions.",
+      "promptEs": "Relaciona Tierra, Luna, masa y peso con sus descripciones.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Earth",
+          "right": "Our home planet",
+          "leftEs": "Tierra",
+          "rightEs": "Nuestro planeta"
+        },
+        {
+          "left": "Moon",
+          "right": "Earth's natural satellite",
+          "leftEs": "Luna",
+          "rightEs": "El satélite natural de la Tierra"
+        },
+        {
+          "left": "Mass",
+          "right": "Matter contained in an object",
+          "leftEs": "Masa",
+          "rightEs": "Materia que contiene un objeto"
+        },
+        {
+          "left": "Weight",
+          "right": "Gravity's pull on an object",
+          "leftEs": "Peso",
+          "rightEs": "Atracción gravitatoria sobre un objeto"
+        }
+      ],
+      "explanation": "Earth and the Moon are bodies; mass and weight are quantities used to describe objects.",
+      "explanationEs": "La Tierra y la Luna son cuerpos; masa y peso son magnitudes para describir objetos."
     }
   ]
 }

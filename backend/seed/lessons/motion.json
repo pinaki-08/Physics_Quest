@@ -94,100 +94,1033 @@
   "questions": [
     {
       "id": "q1",
-      "prompt": "You run 60 metres in 10 seconds. What is your speed?",
+      "prompt": "You run 60 metres in 10 seconds. What is your average speed?",
+      "promptEs": "Corres 60 metros en 10 segundos. ¿Cuál es tu velocidad media?",
       "options": [
         "6 metres per second",
         "10 metres per second",
         "600 metres per second",
         "0.6 metres per second"
       ],
+      "optionsEs": [
+        "6 metros por segundo",
+        "10 metros por segundo",
+        "600 metros por segundo",
+        "0,6 metros por segundo"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Speed is distance divided by time. 60 metres shared over 10 seconds is 6 metres in every second."
+      "explanation": "Speed is distance divided by time. 60 metres shared over 10 seconds is 6 metres in every second.",
+      "explanationEs": "La velocidad media es la distancia dividida entre el tiempo. 60 metros divididos entre 10 segundos son 6 metros por segundo."
     },
     {
       "id": "q2",
       "prompt": "Sitting still on a moving train, you are in motion compared to...",
+      "promptEs": "Mientras estás sentado sin moverte dentro de un tren en marcha, estás en movimiento con respecto a...",
       "options": [
         "A tree outside",
         "Your seat",
         "Your bag",
         "The window"
       ],
+      "optionsEs": [
+        "Un árbol fuera del tren",
+        "Tu asiento",
+        "Tu mochila",
+        "La ventana"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Motion is always measured against a reference point. The seat and your bag travel with you, so you are still compared to them. The tree stays behind, so compared to it you are moving."
+      "explanation": "Motion is always measured against a reference point. The seat and your bag travel with you, so you are still compared to them. The tree stays behind, so compared to it you are moving.",
+      "explanationEs": "El movimiento se describe respecto a un punto de referencia. El asiento y la mochila viajan contigo, pero el árbol no. Por eso te mueves respecto al árbol."
     },
     {
       "id": "q3",
       "prompt": "A cyclist brakes at a corner. This is an example of...",
+      "promptEs": "Un ciclista frena al llegar a una curva. Esto es un ejemplo de...",
       "options": [
         "Acceleration",
         "Constant speed",
         "No motion",
         "A reference point"
       ],
+      "optionsEs": [
+        "Aceleración",
+        "Velocidad constante",
+        "Ausencia de movimiento",
+        "Un punto de referencia"
+      ],
       "answer": 0,
       "points": 10,
       "kind": "mcq",
-      "explanation": "Acceleration means any change of speed, including slowing down. Braking changes the cyclist's speed, so it counts."
+      "explanation": "Acceleration means any change of speed, including slowing down. Braking changes the cyclist's speed, so it counts.",
+      "explanationEs": "La aceleración incluye cualquier cambio de velocidad, también una reducción. Al frenar, cambia la velocidad del ciclista."
     },
     {
       "id": "q4",
-      "kind": "blank",
       "prompt": "Speed is the distance travelled divided by the ___ taken.",
+      "promptEs": "La velocidad es la distancia recorrida dividida entre el ___ transcurrido.",
       "options": [
         "time",
         "force",
         "mass",
         "weight"
       ],
+      "optionsEs": [
+        "tiempo",
+        "fuerza",
+        "masa",
+        "peso"
+      ],
       "answer": 0,
       "points": 10,
-      "explanation": "The formula is speed = distance divided by time. Force and mass belong to other formulas."
+      "kind": "blank",
+      "explanation": "The formula is speed = distance divided by time. Force and mass belong to other formulas.",
+      "explanationEs": "La velocidad media se calcula dividiendo la distancia entre el tiempo."
     },
     {
       "id": "q5",
-      "kind": "oddOneOut",
       "prompt": "Three of these are units of speed. Which one is not?",
+      "promptEs": "Tres de estas son unidades de velocidad. ¿Cuál no lo es?",
       "options": [
         "kilograms",
         "metres per second",
         "kilometres per hour",
         "miles per hour"
       ],
+      "optionsEs": [
+        "kilogramos",
+        "metros por segundo",
+        "kilómetros por hora",
+        "millas por hora"
+      ],
       "answer": 0,
       "points": 10,
-      "explanation": "Every unit of speed is a distance over a time, like metres per second. Kilograms measure mass, not speed."
+      "kind": "oddOneOut",
+      "explanation": "Every unit of speed is a distance over a time, like metres per second. Kilograms measure mass, not speed.",
+      "explanationEs": "Los kilogramos miden masa. Las unidades de velocidad combinan distancia y tiempo."
     },
     {
       "id": "q6",
-      "kind": "match",
       "prompt": "Match each word to what it means.",
-      "points": 20,
+      "promptEs": "Relaciona cada palabra con su significado.",
       "options": [],
       "answer": 0,
+      "points": 20,
+      "kind": "match",
       "pairs": [
         {
           "left": "Speed",
-          "right": "Distance ÷ time"
+          "right": "Distance ÷ time",
+          "leftEs": "Velocidad",
+          "rightEs": "Distancia ÷ tiempo"
         },
         {
           "left": "Motion",
-          "right": "A change of position"
+          "right": "A change of position",
+          "leftEs": "Movimiento",
+          "rightEs": "Un cambio de posición"
         },
         {
           "left": "Acceleration",
-          "right": "A change of speed"
+          "right": "A change of speed",
+          "leftEs": "Aceleración",
+          "rightEs": "Un cambio de velocidad"
         },
         {
           "left": "Reference point",
-          "right": "What you measure against"
+          "right": "What you measure against",
+          "leftEs": "Punto de referencia",
+          "rightEs": "La referencia con la que comparas la posición"
         }
       ],
-      "explanation": "Each term describes a different idea: what movement is, how fast it happens, and what you measure it against."
+      "explanation": "Each term describes a different idea: what movement is, how fast it happens, and what you measure it against.",
+      "explanationEs": "Cada término describe una idea distinta: movimiento, velocidad, cambio de velocidad o referencia."
+    },
+    {
+      "id": "q7",
+      "prompt": "A toy car moves at a constant 4 metres per second for 6 seconds. How far does it travel?",
+      "promptEs": "Un carrito de juguete avanza a una velocidad constante de 4 metros por segundo durante 6 segundos. ¿Qué distancia recorre?",
+      "options": [
+        "1.5 metres",
+        "10 metres",
+        "24 metres",
+        "40 metres"
+      ],
+      "optionsEs": [
+        "1,5 metros",
+        "10 metros",
+        "24 metros",
+        "40 metros"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Distance is speed multiplied by time: 4 times 6 = 24 metres.",
+      "explanationEs": "La distancia es la velocidad multiplicada por el tiempo: 4 por 6 = 24 metros."
+    },
+    {
+      "id": "q8",
+      "prompt": "Maya and Luis each run 24 metres. Maya takes 6 seconds and Luis takes 8 seconds. Who has the greater average speed?",
+      "promptEs": "Maya y Luis recorren 24 metros cada uno. Maya tarda 6 segundos y Luis tarda 8 segundos. ¿Quién tiene mayor velocidad media?",
+      "options": [
+        "Luis",
+        "Maya",
+        "They have the same average speed",
+        "Their masses are needed to compare them"
+      ],
+      "optionsEs": [
+        "Luis",
+        "Maya",
+        "Tienen la misma velocidad media",
+        "Se necesitan sus masas para compararlos"
+      ],
+      "answer": 1,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Maya averages 24 divided by 6 = 4 metres per second. Luis averages 24 divided by 8 = 3 metres per second, so Maya is faster.",
+      "explanationEs": "Maya recorre 24 dividido entre 6 = 4 metros por segundo. Luis recorre 24 dividido entre 8 = 3 metros por segundo. Por eso Maya es más rápida."
+    },
+    {
+      "id": "q9",
+      "prompt": "On a distance-time graph, what does a horizontal line show?",
+      "promptEs": "En una gráfica de distancia frente al tiempo, ¿qué indica una línea horizontal?",
+      "options": [
+        "The object is speeding up",
+        "The object is moving at a steady nonzero speed",
+        "The object is not moving",
+        "The distance is increasing"
+      ],
+      "optionsEs": [
+        "El objeto aumenta su velocidad",
+        "El objeto se mueve a una velocidad constante distinta de cero",
+        "El objeto no se mueve",
+        "La distancia aumenta"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "A horizontal line means time passes but the distance does not change. The object is at rest during that interval.",
+      "explanationEs": "Una línea horizontal indica que pasa el tiempo pero la distancia no cambia. El objeto está en reposo durante ese intervalo."
+    },
+    {
+      "id": "q10",
+      "prompt": "Two straight lines are drawn on the same distance-time graph. Line A slopes upward more steeply than line B. What does this mean?",
+      "promptEs": "En la misma gráfica de distancia frente al tiempo, la línea recta A sube con mayor pendiente que la línea B. ¿Qué significa?",
+      "options": [
+        "Object B has the greater speed",
+        "Both objects have the same speed",
+        "Object A must be moving backward",
+        "Object A has the greater speed"
+      ],
+      "optionsEs": [
+        "El objeto B tiene mayor velocidad",
+        "Ambos objetos tienen la misma velocidad",
+        "El objeto A necesariamente se mueve hacia atrás",
+        "El objeto A tiene mayor velocidad"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "On the same distance-time axes, a steeper upward line shows more distance covered in the same time, so the speed is greater.",
+      "explanationEs": "En los mismos ejes de distancia y tiempo, una mayor pendiente hacia arriba indica más distancia en el mismo tiempo y, por tanto, mayor velocidad."
+    },
+    {
+      "id": "q11",
+      "prompt": "A walker travels 0 metres at 0 seconds, 6 metres at 2 seconds, and 12 metres at 4 seconds. What do these measurements show?",
+      "promptEs": "Un caminante ha recorrido 0 metros a los 0 segundos, 6 metros a los 2 segundos y 12 metros a los 4 segundos. ¿Qué muestran estas mediciones?",
+      "options": [
+        "An average speed of 3 metres per second in each interval",
+        "An increasing speed in each interval",
+        "A decreasing speed in each interval",
+        "No motion in either interval"
+      ],
+      "optionsEs": [
+        "Una velocidad media de 3 metros por segundo en cada intervalo",
+        "Una velocidad que aumenta en cada intervalo",
+        "Una velocidad que disminuye en cada intervalo",
+        "Ausencia de movimiento en ambos intervalos"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "The walker covers 6 metres in each 2-second interval. Each interval has an average speed of 6 divided by 2 = 3 metres per second.",
+      "explanationEs": "El caminante recorre 6 metros en cada intervalo de 2 segundos. Cada intervalo tiene una velocidad media de 6 dividido entre 2 = 3 metros por segundo."
+    },
+    {
+      "id": "q12",
+      "prompt": "A car moving along a straight road changes from 2 metres per second to 6 metres per second. Which statement describes the change?",
+      "promptEs": "Un auto avanza por una carretera recta y pasa de 2 a 6 metros por segundo. ¿Qué describe este cambio?",
+      "options": [
+        "Its speed stays constant",
+        "It comes to a stop",
+        "It speeds up",
+        "Its distance travelled stays zero"
+      ],
+      "optionsEs": [
+        "Su velocidad permanece constante",
+        "Se detiene",
+        "Aumenta su velocidad",
+        "La distancia recorrida sigue siendo cero"
+      ],
+      "answer": 2,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "The speed increases from 2 to 6 metres per second. Increasing speed is one example of acceleration.",
+      "explanationEs": "La velocidad aumenta de 2 a 6 metros por segundo. Aumentar la velocidad es un ejemplo de aceleración."
+    },
+    {
+      "id": "q13",
+      "prompt": "Which two measurements are needed to find a toy car's average speed?",
+      "promptEs": "¿Qué dos mediciones se necesitan para calcular la velocidad media de un carrito de juguete?",
+      "options": [
+        "Mass and height",
+        "Force and mass",
+        "Temperature and distance",
+        "Distance travelled and elapsed time"
+      ],
+      "optionsEs": [
+        "Masa y altura",
+        "Fuerza y masa",
+        "Temperatura y distancia",
+        "Distancia recorrida y tiempo transcurrido"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "mcq",
+      "explanation": "Average speed is total distance travelled divided by elapsed time. Mass, force, and temperature are not needed for this calculation.",
+      "explanationEs": "La velocidad media es la distancia total recorrida dividida entre el tiempo transcurrido. No se necesitan la masa, la fuerza ni la temperatura para este cálculo."
+    },
+    {
+      "id": "blank-2",
+      "prompt": "A change in position is called ___.",
+      "promptEs": "Un cambio de posición se llama ___.",
+      "options": [
+        "motion",
+        "friction",
+        "mass",
+        "weight"
+      ],
+      "optionsEs": [
+        "movimiento",
+        "fricción",
+        "masa",
+        "peso"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Motion means that position changes relative to a reference point.",
+      "explanationEs": "El movimiento es un cambio de posición respecto a un punto de referencia."
+    },
+    {
+      "id": "blank-3",
+      "prompt": "A fixed object used to describe position is a ___.",
+      "promptEs": "Un objeto fijo usado para describir la posición es un ___.",
+      "options": [
+        "reference point",
+        "force",
+        "pulley",
+        "thermometer"
+      ],
+      "optionsEs": [
+        "punto de referencia",
+        "fuerza",
+        "polea",
+        "termómetro"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "A reference point lets us describe where something is and whether it moves.",
+      "explanationEs": "Un punto de referencia permite describir dónde está algo y si se mueve."
+    },
+    {
+      "id": "blank-4",
+      "prompt": "A car that gains speed is ___.",
+      "promptEs": "Un auto que aumenta su velocidad está ___.",
+      "options": [
+        "speeding up",
+        "slowing down",
+        "at rest",
+        "stopping"
+      ],
+      "optionsEs": [
+        "acelerando",
+        "desacelerando",
+        "en reposo",
+        "deteniéndose"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Speeding up means that speed increases.",
+      "explanationEs": "Acelerar, en este caso, significa aumentar la velocidad."
+    },
+    {
+      "id": "blank-5",
+      "prompt": "A car that loses speed is ___.",
+      "promptEs": "Un auto que reduce su velocidad está ___.",
+      "options": [
+        "slowing down",
+        "speeding up",
+        "parked",
+        "gaining mass"
+      ],
+      "optionsEs": [
+        "desacelerando",
+        "acelerando",
+        "estacionado",
+        "ganando masa"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "Slowing down means that speed decreases; the car can still be moving.",
+      "explanationEs": "Desacelerar significa reducir la velocidad; el auto todavía puede moverse."
+    },
+    {
+      "id": "blank-6",
+      "prompt": "On the same distance-time axes, a steeper upward line means ___ speed.",
+      "promptEs": "En los mismos ejes de distancia y tiempo, una línea ascendente más inclinada indica una velocidad ___.",
+      "options": [
+        "higher",
+        "lower",
+        "zero",
+        "the same"
+      ],
+      "optionsEs": [
+        "mayor",
+        "menor",
+        "nula",
+        "igual"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "A steeper line shows more distance covered in the same time.",
+      "explanationEs": "Una mayor pendiente indica más distancia recorrida en el mismo tiempo."
+    },
+    {
+      "id": "blank-7",
+      "prompt": "An object not moving relative to its reference point is at ___.",
+      "promptEs": "Un objeto que no se mueve respecto a su punto de referencia está en ___.",
+      "options": [
+        "rest",
+        "speed",
+        "force",
+        "distance"
+      ],
+      "optionsEs": [
+        "reposo",
+        "velocidad",
+        "fuerza",
+        "distancia"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "At rest describes an unchanged position relative to the chosen reference point.",
+      "explanationEs": "Estar en reposo significa no cambiar de posición respecto al punto de referencia elegido."
+    },
+    {
+      "id": "blank-8",
+      "prompt": "At 3 metres per second for 4 seconds, a toy car travels ___ metres.",
+      "promptEs": "Un carrito que avanza a 3 metros por segundo durante 4 segundos recorre ___ metros.",
+      "options": [
+        "12",
+        "7",
+        "1",
+        "16"
+      ],
+      "optionsEs": [
+        "12",
+        "7",
+        "1",
+        "16"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "At constant speed, distance is speed times time: 3 times 4 = 12.",
+      "explanationEs": "A velocidad constante, la distancia es velocidad por tiempo: 3 por 4 = 12."
+    },
+    {
+      "id": "blank-9",
+      "prompt": "To measure elapsed time, use a ___.",
+      "promptEs": "Para medir el tiempo transcurrido, usa un ___.",
+      "options": [
+        "stopwatch",
+        "metre stick",
+        "balance",
+        "spring scale"
+      ],
+      "optionsEs": [
+        "cronómetro",
+        "metro de medir",
+        "instrumento para comparar masas",
+        "dinamómetro"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "A stopwatch measures how long an event takes.",
+      "explanationEs": "Un cronómetro mide cuánto dura un suceso."
+    },
+    {
+      "id": "blank-10",
+      "prompt": "Complete the English sentence: The bicycle ___ moving.",
+      "promptEs": "Completa la oración: La bicicleta ___ moviéndose.",
+      "options": [
+        "is",
+        "are",
+        "am",
+        "be"
+      ],
+      "optionsEs": [
+        "está",
+        "están",
+        "estoy",
+        "estar"
+      ],
+      "answer": 0,
+      "points": 10,
+      "kind": "blank",
+      "explanation": "The bicycle is singular, so use is: The bicycle is moving.",
+      "explanationEs": "La bicicleta es singular. En inglés se usa is: The bicycle is moving."
+    },
+    {
+      "id": "odd-2",
+      "prompt": "Which word does NOT describe motion?",
+      "promptEs": "¿Qué palabra NO describe el movimiento?",
+      "options": [
+        "moving",
+        "stopped",
+        "speeding up",
+        "purple"
+      ],
+      "optionsEs": [
+        "moviéndose",
+        "detenido",
+        "acelerando",
+        "morado"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Purple describes colour, not how an object moves.",
+      "explanationEs": "Morado describe un color, no cómo se mueve un objeto."
+    },
+    {
+      "id": "odd-3",
+      "prompt": "Which is NOT a unit of time?",
+      "promptEs": "¿Cuál NO es una unidad de tiempo?",
+      "options": [
+        "seconds",
+        "minutes",
+        "hours",
+        "kilograms"
+      ],
+      "optionsEs": [
+        "segundos",
+        "minutos",
+        "horas",
+        "kilogramos"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Kilograms measure mass; seconds, minutes, and hours measure time.",
+      "explanationEs": "Los kilogramos miden masa; los segundos, minutos y horas miden tiempo."
+    },
+    {
+      "id": "odd-4",
+      "prompt": "Which is NOT a unit of distance?",
+      "promptEs": "¿Cuál NO es una unidad de distancia?",
+      "options": [
+        "metres",
+        "kilometres",
+        "centimetres",
+        "seconds"
+      ],
+      "optionsEs": [
+        "metros",
+        "kilómetros",
+        "centímetros",
+        "segundos"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Seconds measure time, not distance.",
+      "explanationEs": "Los segundos miden tiempo, no distancia."
+    },
+    {
+      "id": "odd-5",
+      "prompt": "Which measurement is NOT a speed?",
+      "promptEs": "¿Qué medición NO es una velocidad?",
+      "options": [
+        "2 metres per second",
+        "5 kilometres per hour",
+        "3 miles per hour",
+        "4 metres"
+      ],
+      "optionsEs": [
+        "2 metros por segundo",
+        "5 kilómetros por hora",
+        "3 millas por hora",
+        "4 metros"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Four metres is a distance without a time interval.",
+      "explanationEs": "Cuatro metros es una distancia sin un intervalo de tiempo."
+    },
+    {
+      "id": "odd-6",
+      "prompt": "Which phrase does NOT mean increasing speed?",
+      "promptEs": "¿Qué frase NO significa aumentar la velocidad?",
+      "options": [
+        "gaining speed",
+        "accelerating to a faster speed",
+        "speeding up",
+        "slowing down"
+      ],
+      "optionsEs": [
+        "ganar velocidad",
+        "acelerar hasta una velocidad mayor",
+        "ir cada vez más rápido",
+        "reducir la velocidad"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Slowing down is the opposite of increasing speed.",
+      "explanationEs": "Reducir la velocidad es lo contrario de aumentarla."
+    },
+    {
+      "id": "odd-7",
+      "prompt": "Which is NOT at rest relative to the road?",
+      "promptEs": "¿Cuál NO está en reposo respecto a la carretera?",
+      "options": [
+        "a parked car",
+        "a stopped bus",
+        "a stationary bicycle",
+        "a moving train"
+      ],
+      "optionsEs": [
+        "un auto estacionado",
+        "un autobús detenido",
+        "una bicicleta inmóvil",
+        "un tren en marcha"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "The moving train changes position relative to the road.",
+      "explanationEs": "El tren en marcha cambia de posición respecto a la carretera."
+    },
+    {
+      "id": "odd-8",
+      "prompt": "Which is NOT needed to calculate average speed?",
+      "promptEs": "¿Qué NO se necesita para calcular la velocidad media?",
+      "options": [
+        "total distance",
+        "elapsed time",
+        "consistent units",
+        "mass"
+      ],
+      "optionsEs": [
+        "distancia total",
+        "tiempo transcurrido",
+        "unidades coherentes",
+        "masa"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Average speed uses distance and time in consistent units, not mass.",
+      "explanationEs": "La velocidad media usa distancia y tiempo con unidades coherentes, no masa."
+    },
+    {
+      "id": "odd-9",
+      "prompt": "Which phrase does NOT compare speed?",
+      "promptEs": "¿Qué frase NO compara la velocidad?",
+      "options": [
+        "faster than",
+        "slower than",
+        "as fast as",
+        "heavier than"
+      ],
+      "optionsEs": [
+        "más rápido que",
+        "más lento que",
+        "tan rápido como",
+        "más pesado que"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "Heavier than compares weight, not speed.",
+      "explanationEs": "Más pesado que compara el peso, no la velocidad."
+    },
+    {
+      "id": "odd-10",
+      "prompt": "Which is NOT used to measure motion in this lesson?",
+      "promptEs": "¿Qué NO se usa para medir el movimiento en esta lección?",
+      "options": [
+        "stopwatch",
+        "metre stick",
+        "speedometer",
+        "thermometer"
+      ],
+      "optionsEs": [
+        "cronómetro",
+        "metro de medir",
+        "velocímetro",
+        "termómetro"
+      ],
+      "answer": 3,
+      "points": 10,
+      "kind": "oddOneOut",
+      "explanation": "A thermometer measures temperature rather than distance, time, or speed.",
+      "explanationEs": "Un termómetro mide temperatura, no distancia, tiempo ni velocidad."
+    },
+    {
+      "id": "match-2",
+      "prompt": "Match motion measurements to their meanings.",
+      "promptEs": "Relaciona las mediciones del movimiento con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Distance",
+          "right": "How far something travels",
+          "leftEs": "Distancia",
+          "rightEs": "Qué tan lejos se desplaza algo"
+        },
+        {
+          "left": "Time",
+          "right": "How long an event takes",
+          "leftEs": "Tiempo",
+          "rightEs": "Cuánto dura un suceso"
+        },
+        {
+          "left": "Speed",
+          "right": "Distance covered per unit of time",
+          "leftEs": "Velocidad",
+          "rightEs": "Distancia recorrida por unidad de tiempo"
+        },
+        {
+          "left": "Position",
+          "right": "Where an object is",
+          "leftEs": "Posición",
+          "rightEs": "Dónde está un objeto"
+        }
+      ],
+      "explanation": "Distance, time, speed, and position describe different aspects of motion.",
+      "explanationEs": "Distancia, tiempo, velocidad y posición describen aspectos distintos del movimiento."
+    },
+    {
+      "id": "match-3",
+      "prompt": "Match movement verbs to their meanings.",
+      "promptEs": "Relaciona los verbos de movimiento con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Start",
+          "right": "Begin moving",
+          "leftEs": "Empezar",
+          "rightEs": "Comenzar a moverse"
+        },
+        {
+          "left": "Stop",
+          "right": "Finish moving",
+          "leftEs": "Parar",
+          "rightEs": "Dejar de moverse"
+        },
+        {
+          "left": "Speed up",
+          "right": "Increase speed",
+          "leftEs": "Acelerar",
+          "rightEs": "Aumentar la velocidad"
+        },
+        {
+          "left": "Slow down",
+          "right": "Decrease speed",
+          "leftEs": "Desacelerar",
+          "rightEs": "Reducir la velocidad"
+        }
+      ],
+      "explanation": "These verbs describe starting, stopping, and changing speed.",
+      "explanationEs": "Estos verbos describen cómo empezar, parar y cambiar la velocidad."
+    },
+    {
+      "id": "match-4",
+      "prompt": "Match speed comparisons to their meanings.",
+      "promptEs": "Relaciona las comparaciones de velocidad con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Faster",
+          "right": "A greater speed",
+          "leftEs": "Más rápido",
+          "rightEs": "Una velocidad mayor"
+        },
+        {
+          "left": "Slower",
+          "right": "A smaller speed",
+          "leftEs": "Más lento",
+          "rightEs": "Una velocidad menor"
+        },
+        {
+          "left": "Same speed",
+          "right": "Equal speeds",
+          "leftEs": "Misma velocidad",
+          "rightEs": "Velocidades iguales"
+        },
+        {
+          "left": "At rest",
+          "right": "No motion relative to a reference point",
+          "leftEs": "En reposo",
+          "rightEs": "Sin movimiento respecto a un punto de referencia"
+        }
+      ],
+      "explanation": "Faster and slower compare speeds; at rest depends on the reference point.",
+      "explanationEs": "Más rápido y más lento comparan velocidades; el reposo depende del punto de referencia."
+    },
+    {
+      "id": "match-5",
+      "prompt": "Match each trip to its average speed.",
+      "promptEs": "Relaciona cada recorrido con su velocidad media.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "20 metres in 5 seconds",
+          "right": "4 metres per second",
+          "leftEs": "20 metros en 5 segundos",
+          "rightEs": "4 metros por segundo"
+        },
+        {
+          "left": "30 metres in 6 seconds",
+          "right": "5 metres per second",
+          "leftEs": "30 metros en 6 segundos",
+          "rightEs": "5 metros por segundo"
+        },
+        {
+          "left": "18 metres in 3 seconds",
+          "right": "6 metres per second",
+          "leftEs": "18 metros en 3 segundos",
+          "rightEs": "6 metros por segundo"
+        },
+        {
+          "left": "21 metres in 3 seconds",
+          "right": "7 metres per second",
+          "leftEs": "21 metros en 3 segundos",
+          "rightEs": "7 metros por segundo"
+        }
+      ],
+      "explanation": "Divide each distance by its elapsed time to find the average speed.",
+      "explanationEs": "Divide cada distancia entre el tiempo transcurrido para calcular la velocidad media."
+    },
+    {
+      "id": "match-6",
+      "prompt": "On the same distance-time axes, match each line to its meaning.",
+      "promptEs": "En los mismos ejes de distancia y tiempo, relaciona cada línea con su significado.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Horizontal line",
+          "right": "No increase in distance",
+          "leftEs": "Línea horizontal",
+          "rightEs": "La distancia no aumenta"
+        },
+        {
+          "left": "Straight rising line",
+          "right": "Steady nonzero speed",
+          "leftEs": "Línea recta ascendente",
+          "rightEs": "Velocidad constante distinta de cero"
+        },
+        {
+          "left": "Steeper rising line",
+          "right": "Higher speed than a less steep line",
+          "leftEs": "Línea ascendente más inclinada",
+          "rightEs": "Mayor velocidad que una línea menos inclinada"
+        },
+        {
+          "left": "Curve becoming steeper",
+          "right": "Speed increasing over time",
+          "leftEs": "Curva cada vez más inclinada",
+          "rightEs": "Velocidad que aumenta con el tiempo"
+        }
+      ],
+      "explanation": "The steepness of a distance-time graph indicates speed.",
+      "explanationEs": "La pendiente de una gráfica de distancia y tiempo indica la velocidad."
+    },
+    {
+      "id": "match-7",
+      "prompt": "Match measurement tools and reference ideas to their uses.",
+      "promptEs": "Relaciona los instrumentos y conceptos de referencia con sus usos.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Metre stick",
+          "right": "Measures distance",
+          "leftEs": "Metro de medir",
+          "rightEs": "Mide distancia"
+        },
+        {
+          "left": "Stopwatch",
+          "right": "Measures elapsed time",
+          "leftEs": "Cronómetro",
+          "rightEs": "Mide el tiempo transcurrido"
+        },
+        {
+          "left": "Speedometer",
+          "right": "Shows speed now",
+          "leftEs": "Velocímetro",
+          "rightEs": "Muestra la velocidad actual"
+        },
+        {
+          "left": "Reference point",
+          "right": "Used to describe position",
+          "leftEs": "Punto de referencia",
+          "rightEs": "Se usa para describir la posición"
+        }
+      ],
+      "explanation": "Choose a tool or reference that measures the quantity you need.",
+      "explanationEs": "Elige el instrumento o la referencia correspondiente a lo que necesitas medir."
+    },
+    {
+      "id": "match-8",
+      "prompt": "Match English motion phrases to their meanings.",
+      "promptEs": "Relaciona las frases de movimiento con sus significados.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Is moving",
+          "right": "Its position is changing",
+          "leftEs": "Se está moviendo",
+          "rightEs": "Su posición está cambiando"
+        },
+        {
+          "left": "Is slowing down",
+          "right": "Its speed is decreasing",
+          "leftEs": "Está desacelerando",
+          "rightEs": "Su velocidad está disminuyendo"
+        },
+        {
+          "left": "Is at rest",
+          "right": "Its position stays the same relative to the reference",
+          "leftEs": "Está en reposo",
+          "rightEs": "Su posición no cambia respecto a la referencia"
+        },
+        {
+          "left": "Is speeding up",
+          "right": "Its speed is increasing",
+          "leftEs": "Está acelerando",
+          "rightEs": "Su velocidad está aumentando"
+        }
+      ],
+      "explanation": "The verb is agrees with a singular subject such as the car.",
+      "explanationEs": "El verbo is concuerda con un sujeto singular, como the car."
+    },
+    {
+      "id": "match-9",
+      "prompt": "Match constant-speed expressions to the quantity they give.",
+      "promptEs": "Relaciona las expresiones de velocidad constante con la magnitud que calculan.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "Distance ÷ time",
+          "right": "Speed",
+          "leftEs": "Distancia ÷ tiempo",
+          "rightEs": "Velocidad"
+        },
+        {
+          "left": "Speed × time",
+          "right": "Distance",
+          "leftEs": "Velocidad × tiempo",
+          "rightEs": "Distancia"
+        },
+        {
+          "left": "Distance ÷ speed",
+          "right": "Elapsed time",
+          "leftEs": "Distancia ÷ velocidad",
+          "rightEs": "Tiempo transcurrido"
+        },
+        {
+          "left": "Change in position",
+          "right": "Motion",
+          "leftEs": "Cambio de posición",
+          "rightEs": "Movimiento"
+        }
+      ],
+      "explanation": "Use consistent units and a nonzero speed when dividing distance by speed.",
+      "explanationEs": "Usa unidades coherentes y una velocidad distinta de cero al dividir distancia entre velocidad."
+    },
+    {
+      "id": "match-10",
+      "prompt": "Match each bus situation to its motion description.",
+      "promptEs": "Relaciona cada situación del autobús con su descripción de movimiento.",
+      "options": [],
+      "answer": 0,
+      "points": 20,
+      "kind": "match",
+      "pairs": [
+        {
+          "left": "A parked bus",
+          "right": "At rest relative to the road",
+          "leftEs": "Un autobús estacionado",
+          "rightEs": "En reposo respecto a la carretera"
+        },
+        {
+          "left": "A bus gaining speed after a stop",
+          "right": "Speeding up",
+          "leftEs": "Un autobús que gana velocidad al salir",
+          "rightEs": "Acelerando"
+        },
+        {
+          "left": "A bus braking before a stop",
+          "right": "Slowing down",
+          "leftEs": "Un autobús que frena antes de parar",
+          "rightEs": "Desacelerando"
+        },
+        {
+          "left": "A bus covering equal distances in equal times",
+          "right": "Steady average speed in each interval",
+          "leftEs": "Un autobús que recorre distancias iguales en tiempos iguales",
+          "rightEs": "Velocidad media constante en cada intervalo"
+        }
+      ],
+      "explanation": "Describe the motion you observe rather than guessing from the type of vehicle.",
+      "explanationEs": "Describe el movimiento observado en lugar de adivinarlo por el tipo de vehículo."
     }
   ]
 }

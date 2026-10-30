@@ -121,20 +121,52 @@ class LessonSection {
 /// kinds can be added to content without a schema migration.
 enum QuestionKind { mcq, blank, oddOneOut, match }
 
+extension QuestionKindText on QuestionKind {
+  String get title => switch (this) {
+    QuestionKind.mcq => 'Multiple Choice',
+    QuestionKind.blank => 'Fill the Blank',
+    QuestionKind.oddOneOut => 'Odd One Out',
+    QuestionKind.match => 'Match Up',
+  };
+}
+
 class MatchPair {
   final String left;
   final String right;
+  final String leftEs;
+  final String rightEs;
 
-  const MatchPair({required this.left, required this.right});
+  const MatchPair({
+    required this.left,
+    required this.right,
+    this.leftEs = '',
+    this.rightEs = '',
+  });
 
-  factory MatchPair.fromJson(Map<String, dynamic> json) =>
-      MatchPair(left: json['left'] as String, right: json['right'] as String);
+  factory MatchPair.fromJson(Map<String, dynamic> json) => MatchPair(
+    left: json['left'] as String,
+    right: json['right'] as String,
+    leftEs: json['leftEs'] as String? ?? '',
+    rightEs: json['rightEs'] as String? ?? '',
+  );
+
+  bool get hasSpanishTranslation =>
+      leftEs.trim().isNotEmpty && rightEs.trim().isNotEmpty;
+
+  Map<String, Object> toJson() => {
+    'left': left,
+    'right': right,
+    if (leftEs.isNotEmpty) 'leftEs': leftEs,
+    if (rightEs.isNotEmpty) 'rightEs': rightEs,
+  };
 }
 
 class Question {
   final String id;
   final String prompt;
+  final String promptEs;
   final List<String> options;
+  final List<String> optionsEs;
   final int answer;
   final int points;
   final QuestionKind kind;
@@ -143,22 +175,28 @@ class Question {
   /// Shown once the question is settled, so a student who runs out of tries
   /// learns why rather than just what.
   final String explanation;
+  final String explanationEs;
 
   const Question({
     required this.id,
     required this.prompt,
+    this.promptEs = '',
     this.options = const [],
+    this.optionsEs = const [],
     this.answer = 0,
     this.points = 10,
     this.kind = QuestionKind.mcq,
     this.pairs = const [],
     this.explanation = '',
+    this.explanationEs = '',
   });
 
   factory Question.fromJson(Map<String, dynamic> json) => Question(
     id: json['id'] as String,
     prompt: json['prompt'] as String,
+    promptEs: json['promptEs'] as String? ?? '',
     options: (json['options'] as List<dynamic>? ?? []).cast<String>(),
+    optionsEs: (json['optionsEs'] as List<dynamic>? ?? []).cast<String>(),
     answer: json['answer'] as int? ?? 0,
     points: json['points'] as int? ?? 10,
     kind: QuestionKind.values.firstWhere(
@@ -169,7 +207,33 @@ class Question {
         .map((e) => MatchPair.fromJson(e as Map<String, dynamic>))
         .toList(),
     explanation: json['explanation'] as String? ?? '',
+    explanationEs: json['explanationEs'] as String? ?? '',
   );
+
+  bool get hasSpanishTranslation {
+    if (promptEs.trim().isEmpty || explanationEs.trim().isEmpty) return false;
+    if (kind == QuestionKind.match) {
+      return pairs.isNotEmpty &&
+          pairs.every((pair) => pair.hasSpanishTranslation);
+    }
+    return options.isNotEmpty &&
+        optionsEs.length == options.length &&
+        optionsEs.every((option) => option.trim().isNotEmpty);
+  }
+
+  Map<String, Object> toJson() => {
+    'id': id,
+    'prompt': prompt,
+    if (promptEs.isNotEmpty) 'promptEs': promptEs,
+    'options': options,
+    if (optionsEs.isNotEmpty) 'optionsEs': optionsEs,
+    'answer': answer,
+    'points': points,
+    'kind': kind.name,
+    if (pairs.isNotEmpty) 'pairs': [for (final pair in pairs) pair.toJson()],
+    'explanation': explanation,
+    if (explanationEs.isNotEmpty) 'explanationEs': explanationEs,
+  };
 
   bool isCorrect(int choice) => choice == answer;
 }
