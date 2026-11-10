@@ -9,6 +9,7 @@ class VocabularyText extends StatelessWidget {
   final String text;
   final List<GlossaryTerm> terms;
   final TextStyle style;
+  final TextAlign textAlign;
   final String? blankFill;
   final String blankLabel;
   final Future<void> Function(String text, {required bool spanish})? onSpeak;
@@ -18,6 +19,7 @@ class VocabularyText extends StatelessWidget {
     required this.text,
     required this.terms,
     this.style = const TextStyle(fontSize: 14.5, height: 1.5),
+    this.textAlign = TextAlign.start,
     this.onSpeak,
     this.blankFill,
     this.blankLabel = 'blank',
@@ -50,7 +52,7 @@ class VocabularyText extends StatelessWidget {
   Widget build(BuildContext context) {
     final matches = findVocabularyMatches(text, terms);
     if (matches.isEmpty && !text.contains('___')) {
-      return Text(text, style: style);
+      return Text(text, style: style, textAlign: textAlign);
     }
 
     final spans = <InlineSpan>[];
@@ -85,7 +87,10 @@ class VocabularyText extends StatelessWidget {
     if (cursor < text.length) {
       spans.addAll(_plainSpans(text.substring(cursor)));
     }
-    return Text.rich(TextSpan(style: style, children: spans));
+    return Text.rich(
+      TextSpan(style: style, children: spans),
+      textAlign: textAlign,
+    );
   }
 }
 

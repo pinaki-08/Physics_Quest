@@ -10,6 +10,7 @@ import '../services/speech.dart';
 import '../theme.dart';
 import '../widgets/back_bar.dart';
 import '../widgets/bouncy.dart';
+import '../widgets/practice_drag_card.dart';
 import '../widgets/vocabulary_text.dart';
 
 /// Options are shuffled per run. Without this the seeded answer index of 0
@@ -158,10 +159,9 @@ class _QuizScreenState extends State<QuizScreen> {
     super.dispose();
   }
 
-  /// A wrong tap costs a try, not the question. Only running out of tries
-  /// settles it and costs a heart.
+  /// A wrong answer costs a try; only exhausting the tries costs a heart.
   void _choose(int option) {
-    if (_settled) return;
+    if (_settled || _wrong.contains(option)) return;
     if (option == _question.answer) {
       final attempt = _wrong.length;
       final share = attempt == 0
@@ -298,10 +298,22 @@ class _QuizScreenState extends State<QuizScreen> {
     return filled == null ? prompt : prompt.replaceAll('___', filled);
   }
 
-  String _spokenExplanation({required bool spanish}) {
+  String _explanationBody({required bool spanish}) {
     final q = _question;
     final explanation = spanish ? q.explanationEs : q.explanation;
-    if (q.kind == QuestionKind.match) return explanation;
+    if (q.kind != QuestionKind.oddOneOut) return explanation;
+    final answer = spanish ? q.optionsEs[q.answer] : q.options[q.answer];
+    return '${spanish ? 'La tarjeta' : 'The card'} "$answer" '
+        '${spanish ? 'no pertenece a este grupo.' : 'does not belong in this group.'} '
+        '$explanation';
+  }
+
+  String _spokenExplanation({required bool spanish}) {
+    final q = _question;
+    final explanation = _explanationBody(spanish: spanish);
+    if (q.kind == QuestionKind.match || q.kind == QuestionKind.oddOneOut) {
+      return explanation;
+    }
     final answer = spanish ? q.optionsEs[q.answer] : q.options[q.answer];
     return '${spanish ? 'La respuesta es' : 'The answer is'} $answer. '
         '$explanation';
@@ -385,6 +397,23 @@ class _QuizScreenState extends State<QuizScreen> {
         onSpeak: _speak,
         locked: _settled,
         onSolved: () => _choose(q.answer),
+      );
+    }
+    if (q.kind == QuestionKind.oddOneOut) {
+      return _OddOneOutBoard(
+        key: ValueKey(_index),
+        options: q.options,
+        optionsEs: q.hasSpanishTranslation ? q.optionsEs : const [],
+        answer: q.answer,
+        wrong: _wrong,
+        settled: _settled,
+        gotIt: _gotIt,
+        selected: _selectedOption,
+        showSpanish: _showSpanish,
+        glossary: _glossary,
+        onSpeak: _speak,
+        onSelect: _selectOption,
+        onChoose: _choose,
       );
     }
     return RadioGroup<int>(
@@ -481,6 +510,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 _StatusBar(
                   title: widget.title,
                   kind: _question.kind,
+                  spanish: _showSpanish,
                   lives: _lives,
                   maxLives: _maxLives,
                   multiplier: _multiplier,
@@ -512,13 +542,11 @@ class _QuizScreenState extends State<QuizScreen> {
                         : (_showSpanish
                               ? _question.optionsEs[_question.answer]
                               : _question.options[_question.answer]),
-                    why: _showSpanish
-                        ? _question.explanationEs
-                        : _question.explanation,
+                    why: _explanationBody(spanish: _showSpanish),
                     spanish: _showSpanish,
                     content: !_showSpanish
                         ? VocabularyText(
-                            text: _question.explanation,
+                            text: _explanationBody(spanish: false),
                             terms: _glossary,
                             onSpeak: _speak,
                             style: const TextStyle(
@@ -555,7 +583,11 @@ class _QuizScreenState extends State<QuizScreen> {
                     icon: const Icon(Icons.arrow_forward_rounded, size: 18),
                     label: Text(
                       _index + 1 < _deck.length && _lives > 0
-                          ? 'Next question'
+                          ? (_question.kind == QuestionKind.match
+                                ? (_showSpanish
+                                      ? 'Siguiente ronda'
+                                      : 'Next round')
+                                : 'Next question')
                           : 'See result',
                     ),
                     style: FilledButton.styleFrom(
@@ -781,8 +813,334 @@ class _Explanation extends StatelessWidget {
   }
 }
 
-/// Tap a term, then tap its meaning. Correct pairs lock in place, so the
-/// board gets easier as it empties.
+class _OddOneOutBoard extends StatefulWidget {
+  final List<String> options;
+  final List<String> optionsEs;
+  final int answer;
+  final Set<int> wrong;
+  final bool settled;
+  final bool gotIt;
+  final int? selected;
+  final bool showSpanish;
+  final List<GlossaryTerm> glossary;
+  final Future<void> Function(String text, {required bool spanish}) onSpeak;
+  final ValueChanged<int> onSelect;
+  final ValueChanged<int> onChoose;
+
+  const _OddOneOutBoard({
+    super.key,
+    required this.options,
+    required this.optionsEs,
+    required this.answer,
+    required this.wrong,
+    required this.settled,
+    required this.gotIt,
+    required this.selected,
+    required this.showSpanish,
+    required this.glossary,
+    required this.onSpeak,
+    required this.onSelect,
+    required this.onChoose,
+  });
+
+  @override
+  State<_OddOneOutBoard> createState() => _OddOneOutBoardState();
+}
+
+class _OddOneOutBoardState extends State<_OddOneOutBoard> {
+  static const _prefix = 'oddOneOut';
+  int? _dragging;
+
+  bool _available(int index) =>
+      !widget.settled && !widget.wrong.contains(index);
+
+  String _text(int index) =>
+      widget.showSpanish ? widget.optionsEs[index] : widget.options[index];
+
+  Widget _audio(int index) => _OptionAudioMenu(
+    prefix: _prefix,
+    index: index,
+    english: widget.options[index],
+    spanishText: widget.optionsEs.isEmpty ? null : widget.optionsEs[index],
+    onSpeak: widget.onSpeak,
+  );
+
+  Widget _word(int index) {
+    final wrong = !widget.settled && widget.wrong.contains(index);
+    final selected = widget.selected == index && !widget.settled;
+    final tone = widget.settled
+        ? AppColors.playDeep
+        : wrong
+        ? const Color(0xFFAD533B)
+        : AppColors.learnDeep;
+    final active = selected || wrong || widget.settled;
+    final enabled =
+        _available(index) && (_dragging == null || _dragging == index);
+
+    return PracticeDragCard(
+      prefix: _prefix,
+      index: index,
+      text: _text(index),
+      enabled: enabled,
+      onDragStarted: () => setState(() => _dragging = index),
+      onDragEnded: () {
+        if (mounted) setState(() => _dragging = null);
+      },
+      child: Material(
+        key: ValueKey('$_prefix-option-$index'),
+        color: active ? tone.withValues(alpha: 0.05) : AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: active ? tone : AppColors.line),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: _available(index) ? () => widget.onSelect(index) : null,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 116),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        widget.settled
+                            ? Icons.check_rounded
+                            : wrong
+                            ? Icons.close_rounded
+                            : Icons.drag_indicator_rounded,
+                        size: 16,
+                        color: active ? tone : AppColors.inkSoft,
+                      ),
+                      Semantics(
+                        label: _text(index),
+                        selected: selected,
+                        child: TextButton(
+                          key: ValueKey('$_prefix-option-$index-select'),
+                          onPressed: _available(index)
+                              ? () => widget.onSelect(index)
+                              : null,
+                          style: TextButton.styleFrom(
+                            foregroundColor: tone,
+                            minimumSize: const Size(32, 32),
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(String.fromCharCode(65 + index)),
+                        ),
+                      ),
+                      const Spacer(),
+                      _audio(index),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  VocabularyText(
+                    text: _text(index),
+                    terms: widget.showSpanish ? const [] : widget.glossary,
+                    onSpeak: widget.onSpeak,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      height: 1.4,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _tray(bool hovering) {
+    final selected = widget.selected;
+    final tone = hovering
+        ? AppColors.learnDeep
+        : widget.settled && widget.gotIt
+        ? AppColors.playDeep
+        : widget.wrong.isNotEmpty
+        ? const Color(0xFFAD533B)
+        : AppColors.inkSoft;
+    final title = widget.settled
+        ? widget.gotIt
+              ? (widget.showSpanish
+                    ? 'Encontraste la palabra diferente'
+                    : 'Odd card found')
+              : (widget.showSpanish
+                    ? 'Palabra diferente revelada'
+                    : 'Odd card revealed')
+        : (widget.showSpanish ? 'No pertenece' : "Doesn't belong");
+
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      child: Material(
+        key: const ValueKey('oddOneOut-tray-surface'),
+        color: hovering
+            ? AppColors.learnDeep.withValues(alpha: 0.06)
+            : AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: tone.withValues(alpha: 0.6), width: 1.5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    widget.settled
+                        ? (widget.gotIt
+                              ? Icons.check_circle_outline_rounded
+                              : Icons.info_outline)
+                        : Icons.move_to_inbox_outlined,
+                    color: tone,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: tone,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  if (widget.settled) _audio(widget.answer),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (widget.settled) ...[
+                Text(
+                  _text(widget.answer),
+                  key: const ValueKey('oddOneOut-tray-word'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
+                    height: 1.4,
+                  ),
+                ),
+                if (widget.optionsEs.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.showSpanish
+                        ? widget.options[widget.answer]
+                        : widget.optionsEs[widget.answer],
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: AppColors.inkSoft,
+                    ),
+                  ),
+                ],
+              ] else ...[
+                Text(
+                  hovering
+                      ? (widget.showSpanish ? 'Suelta aquí' : 'Drop here')
+                      : (widget.showSpanish
+                            ? 'Arrastra aquí la tarjeta diferente.'
+                            : 'Drag the odd card here.'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.inkSoft,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                TextButton.icon(
+                  key: const ValueKey('oddOneOut-move-to-tray'),
+                  onPressed: selected == null || !_available(selected)
+                      ? null
+                      : () => widget.onChoose(selected),
+                  icon: const Icon(Icons.arrow_downward_rounded, size: 17),
+                  label: Text(
+                    widget.showSpanish
+                        ? 'Mover la tarjeta seleccionada'
+                        : 'Move selected card',
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final indices = [
+      for (var index = 0; index < widget.options.length; index++)
+        if (!widget.settled || index != widget.answer) index,
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.settled
+              ? (widget.showSpanish
+                    ? 'Estas ${indices.length} tarjetas pertenecen al mismo grupo.'
+                    : 'These ${indices.length} cards belong together.')
+              : (widget.showSpanish
+                    ? '${practiceDragRequiresHold(context) ? 'Mantén presionada y arrastra' : 'Arrastra'} '
+                          'la tarjeta diferente a la bandeja.'
+                    : '${practiceDragRequiresHold(context) ? 'Touch and hold, then drag' : 'Drag'} '
+                          'the odd card into the tray.'),
+          style: const TextStyle(
+            fontSize: 13,
+            color: AppColors.inkSoft,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 12),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final columns =
+                constraints.maxWidth < 300 ||
+                    MediaQuery.textScalerOf(context).scale(16) > 24
+                ? 1
+                : 2;
+            final width = (constraints.maxWidth - 12 * (columns - 1)) / columns;
+            return Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                for (final index in indices)
+                  SizedBox(width: width, child: _word(index)),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        DragTarget<int>(
+          key: const ValueKey('oddOneOut-tray'),
+          onWillAcceptWithDetails: (details) =>
+              _dragging == details.data && _available(details.data),
+          onAcceptWithDetails: (details) => widget.onChoose(details.data),
+          builder: (context, candidates, rejected) =>
+              _tray(candidates.isNotEmpty),
+        ),
+      ],
+    );
+  }
+}
+
+/// Canonical pair indices keep dragging and the tap alternative independent
+/// of shuffled display order and the selected language.
 class _MatchBoard extends StatefulWidget {
   final List<MatchPair> pairs;
   final List<int> rightOrder;
@@ -810,6 +1168,7 @@ class _MatchBoard extends StatefulWidget {
 class _MatchBoardState extends State<_MatchBoard> {
   int? _selectedLeft;
   int? _wrongRight;
+  int? _draggingLeft;
   final _solved = <int>{};
 
   void _tapLeft(int left) {
@@ -822,7 +1181,13 @@ class _MatchBoardState extends State<_MatchBoard> {
 
   void _tapRight(int right) {
     final left = _selectedLeft;
-    if (widget.locked || left == null || _solved.contains(right)) return;
+    if (left != null) _match(left, right);
+  }
+
+  void _match(int left, int right) {
+    if (widget.locked || _solved.contains(left) || _solved.contains(right)) {
+      return;
+    }
     if (right == left) {
       setState(() {
         _solved.add(left);
@@ -835,7 +1200,27 @@ class _MatchBoardState extends State<_MatchBoard> {
     }
   }
 
-  Widget _tile(int index, {required bool left, required String badge}) {
+  void _startDrag(int index) {
+    setState(() {
+      _draggingLeft = index;
+      _selectedLeft = null;
+      _wrongRight = null;
+    });
+  }
+
+  void _endDrag() {
+    if (!mounted) return;
+    setState(() => _draggingLeft = null);
+  }
+
+  bool get _holdToDrag => practiceDragRequiresHold(context);
+
+  Widget _tile(
+    int index, {
+    required bool left,
+    required String badge,
+    bool hovering = false,
+  }) {
     final pair = widget.pairs[index];
     final prefix = left ? 'match-left' : 'match-right';
     final english = left ? pair.left : pair.right;
@@ -848,8 +1233,10 @@ class _MatchBoardState extends State<_MatchBoard> {
       text: text,
       solved: _solved.contains(index),
       selected: left && _selectedLeft == index,
+      hovering: hovering,
       wrong: !left && _wrongRight == index,
       locked: widget.locked,
+      draggable: left && !_solved.contains(index) && !widget.locked,
       content: widget.showSpanish
           ? null
           : VocabularyText(
@@ -869,6 +1256,40 @@ class _MatchBoardState extends State<_MatchBoard> {
     );
   }
 
+  Widget _word(int index, {required String badge}) {
+    final pair = widget.pairs[index];
+    return PracticeDragCard(
+      prefix: 'match',
+      index: index,
+      text: widget.showSpanish ? pair.leftEs : pair.left,
+      enabled:
+          !widget.locked &&
+          !_solved.contains(index) &&
+          (_draggingLeft == null || _draggingLeft == index),
+      onDragStarted: () => _startDrag(index),
+      onDragEnded: _endDrag,
+      child: _tile(index, left: true, badge: badge),
+    );
+  }
+
+  Widget _meaning(int index, {required String badge}) {
+    return DragTarget<int>(
+      key: ValueKey('match-drop-target-$index'),
+      onWillAcceptWithDetails: (details) =>
+          !widget.locked &&
+          _draggingLeft == details.data &&
+          !_solved.contains(details.data) &&
+          !_solved.contains(index),
+      onAcceptWithDetails: (details) => _match(details.data, index),
+      builder: (context, candidates, rejected) => _tile(
+        index,
+        left: false,
+        badge: badge,
+        hovering: candidates.isNotEmpty,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -876,8 +1297,19 @@ class _MatchBoardState extends State<_MatchBoard> {
       children: [
         Text(
           widget.showSpanish
-              ? 'Elige una letra y luego su número correspondiente.'
-              : 'Choose a letter, then its matching number.',
+              ? 'Completa estas ${widget.pairs.length} parejas para terminar la ronda.\n'
+                    '${_holdToDrag ? 'Mantén presionada una palabra y arrástrala' : 'Arrastra una palabra'} '
+                    'hasta su significado a la derecha.'
+              : 'Match these ${widget.pairs.length} pairs to finish this round.\n'
+                    '${_holdToDrag ? 'Touch and hold a word, then drag it' : 'Drag a word'} '
+                    'onto its meaning on the right.',
+          style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          widget.showSpanish
+              ? 'También puedes elegir una letra y luego su número.'
+              : 'Or select a letter, then its matching number.',
           style: const TextStyle(fontSize: 12, color: AppColors.inkSoft),
         ),
         const SizedBox(height: 10),
@@ -888,17 +1320,15 @@ class _MatchBoardState extends State<_MatchBoard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: _tile(
+                  child: _word(
                     position,
-                    left: true,
                     badge: String.fromCharCode(65 + position),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: _tile(
+                  child: _meaning(
                     widget.rightOrder[position],
-                    left: false,
                     badge: '${position + 1}',
                   ),
                 ),
@@ -937,6 +1367,8 @@ class _MatchTile extends StatelessWidget {
   final String text;
   final bool solved;
   final bool selected;
+  final bool hovering;
+  final bool draggable;
   final bool wrong;
   final bool locked;
   final Widget? content;
@@ -950,6 +1382,8 @@ class _MatchTile extends StatelessWidget {
     required this.text,
     required this.solved,
     required this.selected,
+    required this.hovering,
+    required this.draggable,
     required this.wrong,
     required this.locked,
     required this.audioMenu,
@@ -964,7 +1398,7 @@ class _MatchTile extends StatelessWidget {
         : wrong
         ? const Color(0xFFB65D43)
         : AppColors.learnDeep;
-    final active = solved || selected || wrong;
+    final active = solved || selected || wrong || hovering;
     return Material(
       color: active ? tone.withValues(alpha: 0.05) : AppColors.surface,
       shape: RoundedRectangleBorder(
@@ -982,6 +1416,16 @@ class _MatchTile extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  if (draggable)
+                    const Tooltip(
+                      message: 'Drag to the matching meaning',
+                      triggerMode: TooltipTriggerMode.manual,
+                      child: Icon(
+                        Icons.drag_indicator_rounded,
+                        size: 16,
+                        color: AppColors.inkSoft,
+                      ),
+                    ),
                   TextButton(
                     key: selectionKey,
                     onPressed: solved || locked ? null : onTap,
@@ -1028,6 +1472,7 @@ class _MatchTile extends StatelessWidget {
 class _StatusBar extends StatelessWidget {
   final String title;
   final QuestionKind kind;
+  final bool spanish;
   final int lives;
   final int maxLives;
   final int multiplier;
@@ -1037,6 +1482,7 @@ class _StatusBar extends StatelessWidget {
   const _StatusBar({
     required this.title,
     required this.kind,
+    required this.spanish,
     required this.lives,
     required this.maxLives,
     required this.multiplier,
@@ -1133,7 +1579,11 @@ class _StatusBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '${index + 1}/$total',
+                  kind == QuestionKind.match
+                      ? (spanish
+                            ? 'Ronda ${index + 1} de $total'
+                            : 'Round ${index + 1} of $total')
+                      : '${index + 1}/$total',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

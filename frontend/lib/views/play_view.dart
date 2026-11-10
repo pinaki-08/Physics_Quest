@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../games/force_balance_game.dart';
 import '../games/lever_lab_game.dart';
 import '../games/moon_lander_game.dart';
-import '../games/speed_run_game.dart';
+import '../games/motion_tag_game.dart';
 import '../theme.dart';
 import '../widgets/back_bar.dart';
 import '../widgets/bouncy.dart';
@@ -31,19 +31,19 @@ class _Game {
 
 final _games = <_Game>[
   _Game(
-    icon: Icons.directions_run_rounded,
-    title: 'Speed Run',
+    icon: Icons.smart_toy_rounded,
+    title: 'Motion Tag',
     topic: 'Motion & Speed',
-    blurb: 'Pick the speed that finishes on time',
-    color: AppColors.practice,
-    colorDeep: AppColors.practiceDeep,
-    screen: (_) => const SpeedRunGame(),
+    blurb: 'Catch, match, and follow a moving robot',
+    color: const Color(0xFF577F83),
+    colorDeep: const Color(0xFF3D6269),
+    screen: (_) => const MotionTagGame(),
   ),
   _Game(
     icon: Icons.compare_arrows_rounded,
     title: 'Hold the Line',
     topic: 'Forces',
-    blurb: 'Push back against the gusts',
+    blurb: 'Balance pushes with English and Spanish help',
     color: AppColors.sky,
     colorDeep: const Color(0xFF12A8C6),
     screen: (_) => const ForceBalanceGame(),
@@ -103,9 +103,8 @@ class _GameTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Bouncy(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: game.screen),
-      ),
+      onTap: () =>
+          Navigator.of(context).push(MaterialPageRoute(builder: game.screen)),
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
@@ -154,7 +153,9 @@ class _GameTile extends StatelessWidget {
                   const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 9, vertical: 4),
+                      horizontal: 9,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.22),
                       borderRadius: BorderRadius.circular(10),
@@ -171,8 +172,11 @@ class _GameTile extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.play_circle_fill_rounded,
-                size: 32, color: Colors.white70),
+            const Icon(
+              Icons.play_circle_fill_rounded,
+              size: 32,
+              color: Colors.white70,
+            ),
           ],
         ),
       ),

@@ -37,14 +37,23 @@ void main() {
     expect(find.text('Play'), findsOneWidget);
   });
 
-  testWidgets('tapping Learn opens the lessons screen', (tester) async {
+  testWidgets('Learn keeps all four lessons without a progress stats card', (
+    tester,
+  ) async {
     await _pumpApp(tester);
 
     await tester.tap(find.text('Learn'));
     await _settle(tester);
 
     expect(find.text('Your lessons'), findsOneWidget);
+    expect(find.text('Motion & Speed'), findsOneWidget);
     expect(find.text('Forces'), findsOneWidget);
+    expect(find.text('Gravity & Weight'), findsOneWidget);
+    expect(find.text('Simple Machines'), findsOneWidget);
+    expect(find.text('Day streak'), findsNothing);
+    expect(find.text('Points'), findsNothing);
+    expect(find.text('Lessons'), findsNothing);
+    expect(find.text('0/4'), findsNothing);
   });
 
   testWidgets('lesson cards flip between English and Spanish', (tester) async {
@@ -359,31 +368,34 @@ void main() {
     expect(find.text('Pause animation'), findsOneWidget);
   });
 
-  testWidgets('Practice shows Daily Challenge and four game modes only', (
-    tester,
-  ) async {
-    await _pumpApp(tester);
+  testWidgets(
+    'Practice shows only four activity cards without Daily Challenge',
+    (tester) async {
+      await _pumpApp(tester);
 
-    await tester.tap(find.text('Practice'));
-    await _settle(tester);
+      await tester.tap(find.text('Practice'));
+      await _settle(tester);
 
-    expect(find.text('Daily Challenge'), findsOneWidget);
-    expect(find.text('Game modes'), findsNothing);
-    expect(find.text('Multiple Choice'), findsOneWidget);
-    expect(find.text('Fill the Blank'), findsOneWidget);
-    expect(find.text('Odd One Out'), findsOneWidget);
-    expect(find.text('Match Up'), findsOneWidget);
+      expect(find.text('Daily Challenge'), findsNothing);
+      expect(find.text('5 questions, mixed topics'), findsNothing);
+      expect(find.text('Go!'), findsNothing);
+      expect(find.text('Game modes'), findsNothing);
+      expect(find.text('Multiple Choice'), findsOneWidget);
+      expect(find.text('Fill the Blank'), findsOneWidget);
+      expect(find.text('Odd One Out'), findsOneWidget);
+      expect(find.text('Match Up'), findsOneWidget);
 
-    await tester.drag(find.byType(ListView).last, const Offset(0, -600));
-    await _settle(tester);
+      await tester.drag(find.byType(ListView).last, const Offset(0, -600));
+      await _settle(tester);
 
-    expect(find.text('Practice a lesson'), findsNothing);
-    expect(find.text('Mixed Challenge'), findsNothing);
-    expect(find.text('Motion & Speed'), findsNothing);
-    expect(find.text('Forces'), findsNothing);
-    expect(find.text('Gravity & Weight'), findsNothing);
-    expect(find.text('Simple Machines'), findsNothing);
-  });
+      expect(find.text('Practice a lesson'), findsNothing);
+      expect(find.text('Mixed Challenge'), findsNothing);
+      expect(find.text('Motion & Speed'), findsNothing);
+      expect(find.text('Forces'), findsNothing);
+      expect(find.text('Gravity & Weight'), findsNothing);
+      expect(find.text('Simple Machines'), findsNothing);
+    },
+  );
 
   testWidgets('Practice Multiple Choice lists every lesson as a topic', (
     tester,
@@ -416,7 +428,14 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.arrow_back_rounded));
     await _settle(tester);
-    expect(find.text('Daily Challenge'), findsOneWidget);
+    expect(find.text('Daily Challenge'), findsNothing);
+    expect(find.byKey(const ValueKey('practice-mode-mcq')), findsOneWidget);
+    expect(find.byKey(const ValueKey('practice-mode-blank')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('practice-mode-oddOneOut')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('practice-mode-match')), findsOneWidget);
     expect(find.text('Practice a lesson'), findsNothing);
     expect(find.text('Game modes'), findsNothing);
   });
@@ -548,10 +567,19 @@ void main() {
           'gravity',
           'machines',
         ]) {
-          expect(
-            find.byKey(ValueKey('${mode.value.name}-topic-$topicId')),
-            findsOneWidget,
+          final topic = find.byKey(
+            ValueKey('${mode.value.name}-topic-$topicId'),
           );
+          expect(topic, findsOneWidget);
+          if (mode.value == QuestionKind.match) {
+            expect(
+              find.descendant(
+                of: topic,
+                matching: find.text('10 rounds, 4 pairs each'),
+              ),
+              findsOneWidget,
+            );
+          }
         }
         final topic = find.byKey(
           ValueKey('${mode.value.name}-topic-$lessonId'),
@@ -571,6 +599,54 @@ void main() {
     }
   }
 
+  testWidgets('Play opens Motion Tag directly with bilingual help available', (
+    tester,
+  ) async {
+    await _pumpApp(tester);
+    await tester.tap(find.text('Play'));
+    await _settle(tester);
+    expect(
+      find.text('Catch, match, and follow a moving robot'),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Motion Tag'));
+    await _settle(tester);
+    expect(find.text('Catch the blue robot.'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('tag-play')),
+      findsOneWidget,
+    );
+    expect(find.text('Throttle'), findsNothing);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byIcon(Icons.arrow_back_rounded),
+      ),
+    );
+    await _settle(tester);
+    expect(find.text('Soft Landing'), findsOneWidget);
+  });
+
+  testWidgets('Play opens the clearer Hold the Line guided practice', (tester) async {
+    await _pumpApp(tester);
+    await tester.tap(find.text('Play'));
+    await _settle(tester);
+    await tester.tap(find.text('Hold the Line'));
+    await _settle(tester);
+    expect(find.text('Balance the pushes in the green zone.'), findsOneWidget);
+    expect(find.byKey(const ValueKey('balance-play')), findsOneWidget);
+    expect(find.text('Push left'), findsOneWidget);
+    expect(find.textContaining('Thrust'), findsNothing);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byIcon(Icons.arrow_back_rounded),
+      ),
+    );
+    await _settle(tester);
+    expect(find.text('Soft Landing'), findsOneWidget);
+  });
+
   testWidgets('tapping Play opens the games screen and can go back', (
     tester,
   ) async {
@@ -578,7 +654,7 @@ void main() {
 
     await tester.tap(find.text('Play'));
     await _settle(tester);
-    expect(find.text('Speed Run'), findsOneWidget);
+    expect(find.text('Motion Tag'), findsOneWidget);
     expect(find.text('Soft Landing'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.arrow_back_rounded));

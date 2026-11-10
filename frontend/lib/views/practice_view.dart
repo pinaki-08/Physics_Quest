@@ -18,28 +18,28 @@ const _modes = <(QuestionKind, String, String, IconData, Color)>[
     'Multiple Choice',
     'Choose a topic and answer',
     Icons.checklist_rounded,
-    AppColors.learn,
+    Color(0xFF425F78),
   ),
   (
     QuestionKind.blank,
     'Fill the Blank',
     'Complete the sentence',
     Icons.edit_note_rounded,
-    AppColors.play,
+    Color(0xFF496650),
   ),
   (
     QuestionKind.oddOneOut,
     'Odd One Out',
     'Spot what does not belong',
     Icons.search_off_rounded,
-    AppColors.grape,
+    Color(0xFF8A5D4A),
   ),
   (
     QuestionKind.match,
     'Match Up',
     'Pair each word to its meaning',
     Icons.compare_arrows_rounded,
-    AppColors.sunshine,
+    Color(0xFF7D673B),
   ),
 ];
 
@@ -59,34 +59,6 @@ class _PracticeViewState extends State<PracticeView> {
     _lessons = lessonRepository.fetchAll();
   }
 
-  void _open(
-    String quizId,
-    String title,
-    Color color,
-    List<Question> qs, {
-    List<GlossaryTerm> glossary = const [],
-  }) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => QuizScreen(
-          quizId: quizId,
-          title: title,
-          color: color,
-          questions: qs,
-          glossary: glossary,
-        ),
-      ),
-    );
-  }
-
-  /// A fresh shuffle each time, so the daily challenge is not the same five
-  /// questions in the same order.
-  List<Question> _mixed(List<Lesson> lessons, int count) {
-    final pool = [for (final lesson in lessons) ...lesson.questions];
-    pool.shuffle(math.Random());
-    return pool.take(count).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +70,6 @@ class _PracticeViewState extends State<PracticeView> {
             return const Center(child: CircularProgressIndicator());
           }
           final lessons = snapshot.data!;
-          final all = [for (final lesson in lessons) ...lesson.questions];
 
           return ListView(
             padding: const EdgeInsets.fromLTRB(18, 0, 18, 32),
@@ -110,55 +81,75 @@ class _PracticeViewState extends State<PracticeView> {
                 color: AppColors.practice,
                 colorDeep: AppColors.practiceDeep,
               ),
-              const SizedBox(height: 18),
-              _DailyChallenge(
-                onTap: () => _open(
-                  'daily',
-                  'Daily Challenge',
-                  AppColors.sunshine,
-                  _mixed(lessons, math.min(5, all.length)),
-                  glossary: [for (final lesson in lessons) ...lesson.glossary],
-                ),
-              ),
               const SizedBox(height: 22),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 1.24,
-                children: [
-                  for (final mode in _modes)
-                    Builder(
-                      builder: (context) {
-                        final items = [
-                          for (final lesson in lessons)
-                            ...lesson.questions.where((q) => q.kind == mode.$1),
-                        ];
-                        return _ModeCard(
-                          title: mode.$2,
-                          blurb: mode.$3,
-                          icon: mode.$4,
-                          color: mode.$5,
-                          count: items.length,
-                          onTap: items.isEmpty
-                              ? null
-                              : () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => _PracticeTopicsView(
-                                        lessons: lessons,
-                                        kind: mode.$1,
-                                        icon: mode.$4,
-                                      ),
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 920),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final scaledTitleSize = MediaQuery.textScalerOf(
+                        context,
+                      ).scale(24);
+                      final columns =
+                          constraints.maxWidth < 320 || scaledTitleSize > 32
+                          ? 1
+                          : 2;
+                      final cardHeight =
+                          columns == 2 && constraints.maxWidth < 640
+                          ? 300.0
+                          : 240.0;
+                      return GridView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: columns,
+                          mainAxisSpacing: 14,
+                          crossAxisSpacing: 14,
+                          mainAxisExtent:
+                              cardHeight +
+                              math.max(0, scaledTitleSize - 24) * 4,
+                        ),
+                        children: [
+                          for (final mode in _modes)
+                            Builder(
+                              builder: (context) {
+                                final items = [
+                                  for (final lesson in lessons)
+                                    ...lesson.questions.where(
+                                      (q) => q.kind == mode.$1,
                                     ),
-                                  );
-                                },
-                        );
-                      },
-                    ),
-                ],
+                                ];
+                                return _ModeCard(
+                                  key: ValueKey(
+                                    'practice-mode-${mode.$1.name}',
+                                  ),
+                                  title: mode.$2,
+                                  blurb: mode.$3,
+                                  icon: mode.$4,
+                                  color: mode.$5,
+                                  count: items.length,
+                                  onTap: items.isEmpty
+                                      ? null
+                                      : () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  _PracticeTopicsView(
+                                                    lessons: lessons,
+                                                    kind: mode.$1,
+                                                    icon: mode.$4,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                );
+                              },
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
               ),
             ],
           );
@@ -192,6 +183,8 @@ class _PracticeTopicsView extends StatelessWidget {
             title: kind.title,
             subtitle: kind == QuestionKind.mcq
                 ? 'Choose a lesson to practice its MCQs.'
+                : kind == QuestionKind.match
+                ? 'Complete one matching round at a time.'
                 : 'Choose a lesson to start.',
             color: AppColors.learn,
             colorDeep: AppColors.learnDeep,
@@ -203,6 +196,16 @@ class _PracticeTopicsView extends StatelessWidget {
                 final questions = lesson.questions
                     .where((question) => question.kind == kind)
                     .toList();
+                final pairCounts = {
+                  for (final question in questions) question.pairs.length,
+                };
+                final meta = switch (kind) {
+                  QuestionKind.mcq => '${questions.length} MCQs',
+                  QuestionKind.match when pairCounts.length == 1 =>
+                    '${questions.length} rounds, ${pairCounts.single} pairs each',
+                  QuestionKind.match => '${questions.length} matching rounds',
+                  _ => '${questions.length} questions',
+                };
                 return FunCard(
                   key: ValueKey('${kind.name}-topic-${lesson.id}'),
                   icon: const Icon(
@@ -211,12 +214,7 @@ class _PracticeTopicsView extends StatelessWidget {
                     color: AppColors.learn,
                   ),
                   title: lesson.title,
-                  meta:
-                      '${questions.length} ${switch (kind) {
-                        QuestionKind.mcq => 'MCQs',
-                        QuestionKind.match => 'matching sets',
-                        _ => 'questions',
-                      }}',
+                  meta: meta,
                   color: AppColors.learn,
                   locked: questions.isEmpty,
                   onTap: questions.isEmpty
@@ -252,6 +250,7 @@ class _ModeCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _ModeCard({
+    super.key,
     required this.title,
     required this.blurb,
     required this.icon,
@@ -263,142 +262,84 @@ class _ModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Bouncy(
-      onTap: onTap ?? () {},
+      onTap: onTap,
       child: Opacity(
         opacity: onTap == null ? 0.5 : 1,
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [color, color.withValues(alpha: 0.78)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+            color: Color.alphaBlend(
+              color.withValues(alpha: 0.10),
+              AppColors.surface,
             ),
             borderRadius: BorderRadius.circular(24),
-            boxShadow: glow(color, opacity: 0.3, blur: 18),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                child: Icon(icon, size: 19, color: Colors.white),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    blurb,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.white70, fontSize: 11),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$count ${count == 1 ? 'round' : 'rounds'}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+            border: Border.all(color: color.withValues(alpha: 0.18)),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.ink.withValues(alpha: 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DailyChallenge extends StatelessWidget {
-  final VoidCallback onTap;
-  const _DailyChallenge({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Bouncy(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppColors.sunshine, Color(0xFFFF9E1B)],
-          ),
-          borderRadius: BorderRadius.circular(26),
-          boxShadow: glow(AppColors.sunshine, opacity: 0.4),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.25),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(
-                Icons.bolt_rounded,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 14),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Daily Challenge',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontWeight: FontWeight.w700,
-                    ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  Text(
-                    '5 questions, mixed topics',
-                    style: TextStyle(color: Colors.white70, fontSize: 12.5),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const Text(
-                'Go!',
-                style: TextStyle(
-                  color: Color(0xFFE07C00),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
+                  child: Icon(icon, size: 24, color: color),
                 ),
               ),
-            ),
-          ],
+              Center(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      blurb,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.ink,
+                        fontSize: 13,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '$count ${count == 1 ? 'round' : 'rounds'}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -11,6 +11,9 @@ class GameShell extends StatelessWidget {
   final Color color;
   final Widget scoreboard;
   final List<Widget> children;
+  final double maxWidth;
+  final Color? backgroundColor;
+  final ScrollController? controller;
 
   const GameShell({
     super.key,
@@ -19,54 +22,65 @@ class GameShell extends StatelessWidget {
     required this.color,
     required this.scoreboard,
     required this.children,
+    this.maxWidth = double.infinity,
+    this.backgroundColor,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: const BackBar(),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 4, 18, 40),
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [color, color.withValues(alpha: 0.75)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: ListView(
+            controller: controller,
+            padding: const EdgeInsets.fromLTRB(18, 4, 18, 40),
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [color, color.withValues(alpha: 0.75)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(26),
+                  boxShadow: glow(color, opacity: 0.34, blur: 22),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      instruction,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    scoreboard,
+                  ],
+                ),
               ),
-              borderRadius: BorderRadius.circular(26),
-              boxShadow: glow(color, opacity: 0.34, blur: 22),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  instruction,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                scoreboard,
-              ],
-            ),
+              const SizedBox(height: 16),
+              ...children,
+            ],
           ),
-          const SizedBox(height: 16),
-          ...children,
-        ],
+        ),
       ),
     );
   }

@@ -5,7 +5,10 @@ import 'bouncy.dart';
 
 /// Round white back button used at the top of each section screen.
 class BackBar extends StatelessWidget implements PreferredSizeWidget {
-  const BackBar({super.key});
+  const BackBar({super.key, this.title, this.actions});
+
+  final Widget? title;
+  final List<Widget>? actions;
 
   @override
   Size get preferredSize => const Size.fromHeight(60);
@@ -15,6 +18,8 @@ class BackBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       toolbarHeight: 60,
       backgroundColor: Colors.transparent,
+      title: title,
+      actions: actions,
       leadingWidth: 74,
       leading: Center(
         child: Bouncy(
